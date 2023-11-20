@@ -24,7 +24,7 @@ export function main() {
     // texturevector.load("base.uv")
     mesh.loadGroupsFactory("base.parts")
     // mesh.loadSubdGroupsFactory("subd.parts")
-    // mesh.loadSkinFactory("base.skin")
+    // mesh.loadSkinFactory("base.skin") // muscles? file is empty
     // mesh.loadClothesFactory("base.clothes")
     // mesh.loadEdgeStripFactory("base.strips")
     // mesh.loadSmoothVertexFactory("base.smooth")
@@ -35,21 +35,15 @@ export function main() {
     mesh.loadPoseTargetsFactory("rotations")
     // mesh.loadCharactersFactory("bs_data")
 
+    // mesh.initPoses()
+    // mesh.setPose("180_right_upper_leg/ROT_ADJUST1", 1000.0)
+
     // okay... this should be enough to render something...
     const canvas = document.createElement("canvas")
     canvas.style.width = "100vw"
     canvas.style.height = "100vh"
     document.body.style.overflow = "hidden"
     document.body.replaceChildren(canvas)
-
-    // mesh.facegroup.forEach((group, name) => {
-    //     if (isNaN(group.facesIndexes[0])) {
-    //         console.log(`facegroup '${name}' wasn't properly loaded`)
-    //         return
-    //     }
-    //     const quads = mesh.facevector[group.facesIndexes[0]].vertices.length === 4
-    //     console.log(`${name} ${quads ? "quads" : "triangles"}`)
-    // })
 
     renderMesh(canvas, mesh)
 }
@@ -148,4 +142,9 @@ function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     })
 }
 
-main()
+try {
+    main()
+}
+catch(e) {
+    console.log(e)
+}

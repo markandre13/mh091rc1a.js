@@ -1,10 +1,10 @@
 import { PoseTarget } from "./PoseTarget"
 
 export class PoseEntry {
-    mFilename: string
-    mFullPath: string
-    mTarget?: PoseTarget
-    mTargetLoadTry: boolean = false;
+    private mFilename: string
+    private mFullPath: string
+    private mTarget?: PoseTarget
+    private mTargetLoadTry: boolean = false;
     constructor(filename: string, fullPath: string, preload = false) {
         this.mFilename = filename
         this.mFullPath = fullPath
@@ -19,5 +19,11 @@ export class PoseEntry {
             this.mTarget.load()
         }
         return this.mTarget !== undefined
+    }
+    getTarget() {
+        if (!this.mTargetLoadTry) {
+            this.loadFromFile()
+        }
+        return this.mTarget
     }
 }

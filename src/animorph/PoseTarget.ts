@@ -2,8 +2,20 @@ import { DirectoryList } from "./DirectoryList"
 import { Vertex } from "./Vertex"
 import { PoseRotation } from "./PoseRotation"
 import { PoseTranslation } from "./PoseTranslation"
+import { vec3 } from "gl-matrix"
 
 export class UnsortedUsedVertex extends Array<number> {}
+
+export function calcCenteroid(vertexNumbers: number[], vertexvector: Vertex[]): vec3
+{
+  let center = vec3.create()
+  for(const vn of vertexNumbers) {
+    vec3.add(center, center, vertexvector[vn].co)
+  }
+  vec3.scale(center, center, 1/vertexNumbers.length)
+  return center;
+}
+
 
 export class PoseTarget {
     // normally these vectors contain only one element
@@ -28,8 +40,15 @@ export class PoseTarget {
     private maxAngle: number = 0.0
 
     /// Initializes the center of all rotations with the controid of their centerVertexNumbers
-    calcRotationsCenteroids(vertexvector: Vertex[], rotations: PoseRotation[]): void {}
-    calcTranslationsFormFactors(vertexvector: Vertex[], translations: PoseTranslation[]): void {}
+    private calcRotationsCenteroids(vertexvector: Vertex[], rotations: PoseRotation[]): void {
+        for(const rotations_it of rotations) {
+            rotations_it.setCenter(calcCenteroid(rotations_it.getCenterVertexNumbers(), vertexvector))
+        }
+    }
+    
+    private calcTranslationsFormFactors(vertexvector: Vertex[], translations: PoseTranslation[]): void {
+        throw Error("not implemented yet")
+    }
 
     constructor(targetName: string, fullpath: string) {
         this.targetName = targetName
@@ -90,6 +109,32 @@ export class PoseTarget {
             }
         }
     }
+    hasNegative() {
+        return this.negative
+    }
+    hasPositive() {
+        return this.positive
+    }
+    getPositiveTranslations() {
+        return this.positiveTranslations
+    }
+    getNegativeTranslations() {
+        return this.negativeTranslations
+    }
+    getPositiveRotations() {
+        return this.positiveRotations
+    }
+    getNegativeRotations() {
+        return this.negativeRotations
+    }
+    getModVertex() {
+        return this.modVertex
+    }
+    //void showCenters();
+    getMinAngle() {
+        return this.minAngle
+    }
+    getMaxAngle() {
+        return this.maxAngle
+    }
 }
-
-
