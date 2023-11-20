@@ -37,7 +37,7 @@ export class Mesh {
 
         // reading all the targets recursively
         const dir_list = new DirectoryList()
-        dir_list.setRootPath(`data/${targetRootPath}`)
+        dir_list.setRootPath(targetRootPath)
         dir_list.setRecursive(recursiveLevel)
         dir_list.setFileFilter(".target")
 
@@ -54,7 +54,7 @@ export class Mesh {
 
         // reading all the targets recursively
         const dir_list = new DirectoryList()
-        dir_list.setRootPath(`data/${targetRootPath}`)
+        dir_list.setRootPath(targetRootPath)
         dir_list.setRecursive(recursiveLevel)
         dir_list.setFileType(FileType.DIRECTORY)
 
@@ -95,7 +95,7 @@ class FaceGroup extends Map<string, FGroup> {
     private vertexes = new Map<string, VertexData>()
     load(filename: string): boolean {
         let fgroup_indent: string
-        const content = FileSystemAdapter.readFile(`data/${filename}`)
+        const content = FileSystemAdapter.readFile(filename)
         const reader = new StringToLine(content)
         let lineNumber = 0
         for (let line of reader) {

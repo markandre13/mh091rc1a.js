@@ -1,11 +1,13 @@
 import { Mesh } from "./animorph/Mesh"
 import { FileSystemAdapter } from "./filesystem/FileSystemAdapter"
-import { NodeJSFSAdapter } from "./filesystem/NodeJSFSAdapter"
+import { HTTPFSAdapter } from "./filesystem/HTTPFSAdapter"
+// import { NodeJSFSAdapter } from "./filesystem/NodeJSFSAdapter"
 
 // makehuman-0.9.1-rc1a/src/makehuman.cpp, line 499
-function main() {
-    console.log(`Makehuman 0.9.1-rc1a (JS Port)`)
-    FileSystemAdapter.setInstance(new NodeJSFSAdapter())
+export function main() {
+    console.log(`mh091rc1a (Makehuman 0.9.1-rc1a clone)`)
+    FileSystemAdapter.setInstance(new HTTPFSAdapter())
+    // FileSystemAdapter.setInstance(new NodeJSFSAdapter())
     const mesh = new Mesh()
     mesh.loadMeshFactory("base.vertices", "base.faces")
     // mesh.loadMaterialFactory("base.materials", "base.colors")
@@ -25,6 +27,9 @@ function main() {
     // mesh.loadCharactersFactory("bs_data")
 
     // okay... this should be enough to render something...
+    document.body.replaceChildren(
+        document.createTextNode("ready...")
+    )
 }
 
 // makehuman-0.9.1-rc1a/src/makehuman.cpp, line 923

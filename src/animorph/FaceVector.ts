@@ -4,7 +4,7 @@ import { StringToLine } from "../lib/StringToLine"
 
 export class FaceVector extends Array<Face> {
     loadGeometry(filename: string) {
-        const data = FileSystemAdapter.readFile(`data/${filename}`)
+        const data = FileSystemAdapter.readFile(filename)
         const reader = new StringToLine(data)
         let lineNumber = 0, triangles = 0, quads = 0
         for (let line of reader) {
