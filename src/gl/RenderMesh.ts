@@ -107,7 +107,9 @@ export class RenderMesh {
     }
 
     drawSubset(mode: number, offset: number, length: number) {
-        this.gl.drawElements(mode, (length / 4) * 6, this.gl.UNSIGNED_SHORT, (offset / 4) * 6)
+        // divide by quad edge count, multiply by triangle edge count, multiply by octets in short
+        // this.gl.drawElements(mode, (length / 4) * 6, this.gl.UNSIGNED_SHORT, (offset / 4) * 6)
+        this.gl.drawElements(mode, length, this.gl.UNSIGNED_SHORT, offset * 2)
     }
 
     protected createBuffer(

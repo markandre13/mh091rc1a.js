@@ -47,7 +47,7 @@ export class Mesh {
             const targetEntry = new TargetEntry(file, preload)
             this.targetmap.set(target_name, targetEntry)
         }
-        console.log(`${preload ? "loaded" : "found"} ${files.length} morph targets from ${targetRootPath}/`)
+        console.log(`${preload ? "loaded" : "referenced"} ${files.length} morph targets from ${targetRootPath}/`)
     }
     loadPoseTargetsFactory(targetRootPath: string, recursiveLevel = 1) {
         this.posemap.clear()

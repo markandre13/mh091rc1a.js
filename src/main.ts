@@ -54,6 +54,11 @@ export function main() {
     renderMesh(canvas, mesh)
 }
 
+interface FG {
+    offset: number
+    length: number
+}
+
 // makehuman-0.9.1-rc1a/src/makehuman.cpp, line 923
 function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     const gl = (canvas.getContext("webgl2") || canvas.getContext("experimental-webgl")) as WebGL2RenderingContext
@@ -81,10 +86,12 @@ function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
         vertex.push(v.co[0], v.co[1], v.co[2])
     }
 
-    // STEP 2: created faces and as they are a mix for triangles and quads, convert them to triangles
+    // STEP 2: created faces and as they are a mix of triangles and quads, convert them to triangles
     const fvertex: number[] = []
 
+    const fg2 = new Map<string, FG>()
     mesh.facegroup.forEach((group, name) => {
+        const offset = fvertex.length
         for (const faceIdx of group.facesIndexes) {
             const foo = mesh.facevector[faceIdx]
             if (foo === undefined) {
@@ -103,12 +110,42 @@ function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
                     console.log(`skipping face with ${face.length} edges`)
             }
         }
+        const length = fvertex.length - offset
+        fg2.set(name, { offset: offset, length: length })
     })
 
     const renderMesh = new RenderMesh(gl, new Float32Array(vertex), fvertex, undefined, undefined, false)
+    renderMesh.bind(programRGBA)
 
-    programRGBA.setColor([1, 1, 1, 1])
-    renderMesh.draw(programRGBA, gl.TRIANGLES)
+    fg2.forEach((group, name) => {
+        switch (name) {
+            case "body":
+            case "head":
+                programRGBA.setColor([1, 0.8, 0.7, 1])
+                break
+            case "teeth":
+                programRGBA.setColor([1, 1, 1, 1])
+                break
+            case "tongue":
+            case "gums":
+                programRGBA.setColor([1, 0, 0, 1])
+                break
+            case "eyes": // the white in the eyes
+                programRGBA.setColor([1, 1, 1, 1])
+                break
+            case "zcornea": // the cornea in the eyes
+                programRGBA.setColor([0, 0, 0, 1])
+                break
+            case "zeyebrows":
+            case "zeyelashes":
+                programRGBA.setColor([0, 0, 0, 1])
+                break
+            default:
+                console.log(name)
+                programRGBA.setColor([1, 0, 0, 1])
+        }
+        renderMesh.drawSubset(gl.TRIANGLES, group.offset, group.length)
+    })
 }
 
 main()
