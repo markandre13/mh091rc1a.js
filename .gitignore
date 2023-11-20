@@ -3,5 +3,6 @@ DEADJOE
 *~
 node_modules
 dist
+data
 build
 package-lock.json
