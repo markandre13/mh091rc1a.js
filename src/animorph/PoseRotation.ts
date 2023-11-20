@@ -16,31 +16,31 @@ export enum RotateAxis {
 
 export class PoseRotation extends Array<PoseTargetData> {
     /// Used to calculate center
-    private centerVertexNumbers: number[]
+    private centerVertexNumbers!: number[]
     /// Will be used as parameter for Matrix::setRoation()
-    private axis: RotateAxis
+    private axis!: RotateAxis
     /// Set of all indices in the ".rot" file
     private modVertex: UnsortedUsedVertex = [];
     /// Currently unused
-    private hasCenter: boolean
+    private hasCenter!: boolean
     /// Minimum angle in radians
-    private minAngle: number
+    private minAngle!: number
     /// Maximum angle in radians
-    private maxAngle: number
+    private maxAngle!: number
     /// will be set to true by PoseTarget::calcNormalizations() if our (min|max)Angle != PoseTarget::(min|max)Angle
-    private normalize: boolean
+    private normalize!: boolean
     //string inFilename;
     /* \brief "Category"? Currently always "00"
      * First two characters of the filename, eg . "00" for "00_Z_LIMB_SPINE1.rot"
      */
-    private cat: string
+    private cat!: string
 
     /* \brief Centroid of centerVertexNumbers
      * Is initialized by PoseTarget::calcRotationsCenteroids()
      */
-    private center: vec3
+    private center!: vec3
     ///Limb rotation Type
-    private mbLimb: boolean
+    private mbLimb!: boolean
 
     clear() {
         this.length = 0

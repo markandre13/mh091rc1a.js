@@ -79,9 +79,9 @@ class FGroupData extends Array<number> {}
 class VertexData extends Map<number, number> {}
 
 class FGroup {
-    visible: boolean
+    visible!: boolean
     /// A vector of ints
-    facesIndexes: FGroupData
+    facesIndexes!: FGroupData
     facesIndexes_subd?: FGroupData ///subdivision
 }
 
@@ -90,9 +90,9 @@ function isAlpha(ch: string){
 }
 
 class FaceGroup extends Map<string, FGroup> {
-    private loaded: boolean
+    private loaded: boolean = false
     // Maps FaceGroup identifiers via vertex group numbers to vertex indices
-    private vertexes: Map<string, VertexData>
+    private vertexes = new Map<string, VertexData>()
     load(filename: string): boolean {
         let fgroup_indent: string
         const content = FileSystemAdapter.readFile(`data/${filename}`)

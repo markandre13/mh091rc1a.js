@@ -1,0 +1,20 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "target": "es2020",
+        "module": "es6",
+        "esModuleInterop": true,
+        "plugins": [
+            {
+                "transform": "./m13-es-transformer.ts",
+                "after": true,
+            }
+        ],
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "test/**/*.ts",
+        "test/**/*.tsx",
+    ],
+}

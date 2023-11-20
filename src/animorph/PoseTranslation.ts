@@ -4,18 +4,18 @@ import { Target } from "./Target"
 import { VertexVector } from "./VertexVector"
 
 export class PoseTranslation {
-    private target = new Target();
-    private originalSize: number[]
-    private formFactor = vec3.fromValues(1, 1, 1);
-    private minAngle: number = 0;
-    private maxAngle: number = 0;
+    private target = new Target()
+    private originalSize!: number[]
+    private formFactor = vec3.fromValues(1, 1, 1)
+    private minAngle: number = 0
+    private maxAngle: number = 0
     /// flag
-    private normalize: boolean = false;
+    private normalize: boolean = false
     //string inFilename;
     /// Can be used to influence the order of application of rotations and translations
-    private cat: string = "";
+    private cat: string = ""
 
-    private mbLimb: boolean
+    private mbLimb: boolean = false
 
     load(filename: string): boolean {
         const info = FileSystemAdapter.readFile(`${filename}.info`)
