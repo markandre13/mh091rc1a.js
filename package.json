@@ -20,7 +20,7 @@
     "update": "npx npm-check-updates -u && npm install"
   },
   "author": "Mark-André Hopf <mhopf@mark13.org> based on work of the MakeHuman Team (www.makehumancommunity.org)",
-  "license": "GPL-2.0-only",
+  "license": "GPL-2.0-or-later",
   "engines": {
     "npm": ">=8.1.2",
     "node": ">=16.10.0"
