@@ -1,6 +1,6 @@
 import { mat4 } from "gl-matrix"
 
-export function prepareCanvas(canvas: HTMLCanvasElement) {
+export function adjustCanvasSize(canvas: HTMLCanvasElement) {
     if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
         canvas.width = canvas.clientWidth
         canvas.height = canvas.clientHeight
@@ -14,17 +14,15 @@ export function prepareViewport(gl: WebGL2RenderingContext, canvas: HTMLCanvasEl
     gl.enable(gl.DEPTH_TEST)
     gl.depthFunc(gl.LEQUAL)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    gl.depthMask(true)
 }
 
-export function createModelViewMatrix() {
+export function createModelViewMatrix(x: number, y: number) {
+    const D = 180 / Math.PI
     const modelViewMatrix = mat4.create()
-    // if (renderMode === RenderMode.EXPRESSION) {
-        mat4.translate(modelViewMatrix, modelViewMatrix, [0, 0, -25])
-        mat4.rotate(modelViewMatrix, modelViewMatrix, -Math.PI / 6, [0, 1, 0])
-    // } else {
-        // mat4.translate(modelViewMatrix, modelViewMatrix, [-0, 0, -25]) // move the model (cube) away
-        // mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * 0.7, [0, 1, 0])
-    // }
+    mat4.translate(modelViewMatrix, modelViewMatrix, [0, 0, -25])
+    mat4.rotateX(modelViewMatrix, modelViewMatrix, y / D)
+    mat4.rotateY(modelViewMatrix, modelViewMatrix, x / D)
     return modelViewMatrix
 }
 
@@ -65,30 +63,13 @@ export function loadTexture(gl: WebGLRenderingContext, url: string) {
     const srcFormat = gl.RGBA
     const srcType = gl.UNSIGNED_BYTE
     const pixel = new Uint8Array([0, 0, 255, 255]) // opaque blue
-    gl.texImage2D(
-        gl.TEXTURE_2D,
-        level,
-        internalFormat,
-        width,
-        height,
-        border,
-        srcFormat,
-        srcType,
-        pixel
-    )
+    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat, srcType, pixel)
 
     const image = new Image()
     image.onload = () => {
         console.log(`texture "${url}" has been loaded`)
         gl.bindTexture(gl.TEXTURE_2D, texture)
-        gl.texImage2D(
-            gl.TEXTURE_2D,
-            level,
-            internalFormat,
-            srcFormat,
-            srcType,
-            image
-        )
+        gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image)
 
         // WebGL1 has different requirements for power of 2 images
         // vs non power of 2 images so check if the image is a
