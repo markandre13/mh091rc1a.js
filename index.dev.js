@@ -1,1 +1,1 @@
-import { main } from "./build/main.js"
+import { main } from "./build/src/main.js"

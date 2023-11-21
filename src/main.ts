@@ -35,8 +35,8 @@ export function main() {
     mesh.loadPoseTargetsFactory("rotations")
     // mesh.loadCharactersFactory("bs_data")
 
-    // mesh.initPoses()
-    // mesh.setPose("180_right_upper_leg/ROT_ADJUST1", 1000.0)
+    mesh.initPoses()
+    mesh.setPose("180_right_upper_leg/ROT_ADJUST2", 1000.0)
 
     // okay... this should be enough to render something...
     const canvas = document.createElement("canvas")

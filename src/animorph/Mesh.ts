@@ -80,15 +80,15 @@ export class Mesh {
     //     throw Error("not implemented yet")
     // }
     initPoses() {
-        console.log(`Mesh.initPoses() not implemented`)
-        return
-        // const vertexvector_morph_copy = this.vertexvector_morph
-        // this.posemap.forEach((poseEntry) => {
-        //     const tmp = poseEntry.getTarget()
-        //     tmp.calcRotationsCenteroids(vertexvector_morph_copy)
-        //     tmp.calcTranslationsFormFactors(vertexvector_morph_copy)
-        //     tmp.calcNormalizations()
-        // })
+        // console.log(`Mesh.initPoses() not implemented`)
+        // return
+        const vertexvector_morph_copy = this.vertexvector_morph
+        this.posemap.forEach((poseEntry) => {
+            const tmp = poseEntry.getTarget()!
+            tmp.calcRotationsCenteroids(vertexvector_morph_copy)
+            tmp.calcTranslationsFormFactors(vertexvector_morph_copy)
+            tmp.calcNormalizations()
+        })
 
         // for (std::vector <SkinVertex>::iterator skin_it = skin.begin ();
         //     skin_it != skin.end ();

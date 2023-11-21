@@ -32,6 +32,11 @@
     "toad.jsx": "^0.0.10"
   },
   "devDependencies": {
+    "@esm-bundle/chai": "^4.3.4-fix.0",
+    "@types/chai": "^4.3.11",
+    "@types/chai-almost": "^1.0.3",
+    "@types/chai-string": "^1.4.5",
+    "@types/mocha": "^10.0.5",
     "@types/node": "^20.9.2",
     "@web/dev-server": "^0.4.1",
     "@web/test-runner": "^0.18.0",
