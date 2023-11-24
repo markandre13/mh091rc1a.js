@@ -37,8 +37,9 @@ export function main() {
 
     console.log("init poses")
     mesh.initPoses()
+
     console.log("set pose")
-    mesh.setPose("180_right_upper_leg/ROT_ADJUST2", 1000.0)
+    mesh.setPose("180_right_upper_leg/ROT_ADJUST2", -80)
     // console.log("render")
 
     // okay... this should be enough to render something...

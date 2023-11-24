@@ -203,17 +203,17 @@ export class Mesh {
             if (!modVertex.has(td.vertex_number)) {
                 continue
             }
-            const theta = real_value * td.rotation
+            const theta = real_value * td.rotation * M_PI_180
             mat4.identity(rotMatrix)
             switch (axis) {
                 case RotateAxis.X_AXIS:
-                    mat4.rotateX(rotMatrix, rotMatrix, theta * M_PI_180)
+                    mat4.rotateX(rotMatrix, rotMatrix, theta)
                     break
                 case RotateAxis.Y_AXIS:
-                    mat4.rotateY(rotMatrix, rotMatrix, theta * M_PI_180)
+                    mat4.rotateY(rotMatrix, rotMatrix, theta)
                     break
                 case RotateAxis.Z_AXIS:
-                    mat4.rotateZ(rotMatrix, rotMatrix, theta * M_PI_180)
+                    mat4.rotateZ(rotMatrix, rotMatrix, theta)
                     break
             }
             // vertexvector_morph[td.vertex_number].co = ((vertexvector_morph[td.vertex_number].co - pr.getCenter()) * rotMatrix) + pr.getCenter();

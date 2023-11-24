@@ -22,18 +22,18 @@ export class PoseRotation extends Array<PoseTargetData> {
     /// Set of all indices in the ".rot" file
     private modVertex: UnsortedUsedVertex = [];
     /// Currently unused
-    private hasCenter!: boolean
+    private hasCenter: boolean = false
     /// Minimum angle in radians
-    private minAngle!: number
+    private minAngle: number = 0
     /// Maximum angle in radians
-    private maxAngle!: number
+    private maxAngle: number = 0
     /// will be set to true by PoseTarget::calcNormalizations() if our (min|max)Angle != PoseTarget::(min|max)Angle
-    private normalize!: boolean
+    private normalize: boolean = false
     //string inFilename;
     /* \brief "Category"? Currently always "00"
      * First two characters of the filename, eg . "00" for "00_Z_LIMB_SPINE1.rot"
      */
-    private cat!: string
+    private cat: string = ""
 
     /* \brief Centroid of centerVertexNumbers
      * Is initialized by PoseTarget::calcRotationsCenteroids()
@@ -88,6 +88,8 @@ export class PoseRotation extends Array<PoseTargetData> {
             case "Z":
                 this.axis = RotateAxis.Z_AXIS
                 break
+            default:
+                throw Error(`unknown axis ${ax}`)
         }
         this.centerVertexNumbers = str.split(",").map((it) => parseInt(it))
         return true

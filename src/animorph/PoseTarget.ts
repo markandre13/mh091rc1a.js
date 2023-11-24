@@ -65,6 +65,7 @@ export class PoseTarget {
                     this.negative = true
                     this.minAngle = Math.min(this.minAngle, tmpRotation.getMinAngle())
                 }
+                continue
             }
             if (target_name.endsWith(positive_rotation_type)) {
                 const tmpRotation = new PoseRotation()
@@ -74,8 +75,9 @@ export class PoseTarget {
                     this.positiveRotations.push(tmpRotation)
                     tmpRotation.getModVertex().forEach((idx) => this.modVertex.add(idx))
                     this.positive = true
-                    this.maxAngle = Math.min(this.maxAngle, tmpRotation.getMaxAngle())
+                    this.maxAngle = Math.max(this.maxAngle, tmpRotation.getMaxAngle())
                 }
+                continue
             }
             if (target_name.endsWith(negative_translation_type)) {
                 const tmpTranslation = new PoseTranslation()
@@ -85,6 +87,7 @@ export class PoseTarget {
                     tmpTranslation.getModVertex().forEach((idx) => this.modVertex.add(idx))
                     this.minAngle = Math.min(this.minAngle, tmpTranslation.getMinAngle())
                 }
+                continue
             }
             if (target_name.endsWith(positive_translation_type)) {
                 const tmpTranslation = new PoseTranslation()
@@ -92,8 +95,9 @@ export class PoseTarget {
                     tmpTranslation.setCat(target_name.substring(0, 2))
                     this.positiveTranslations.push(tmpTranslation)
                     tmpTranslation.getModVertex().forEach((idx) => this.modVertex.add(idx))
-                    this.maxAngle = Math.min(this.maxAngle, tmpTranslation.getMaxAngle())
+                    this.maxAngle = Math.max(this.maxAngle, tmpTranslation.getMaxAngle())
                 }
+                continue
             }
         }
     }
