@@ -141,6 +141,7 @@ export class Mesh {
             this.doPoseTranslation(pt, morph_value, modVertex)
         }
         for (const pr of rotations) {
+            console.log(`doPose(${target_name}, ${morph_value}) rotate, has 4643: ${modVertex.has(4643)}`)
             this.doPoseRotation(pr, morph_value, modVertex)
         }
     }
@@ -217,15 +218,25 @@ export class Mesh {
                     break
             }
             // vertexvector_morph[td.vertex_number].co = ((vertexvector_morph[td.vertex_number].co - pr.getCenter()) * rotMatrix) + pr.getCenter();
+            // console.log(`rotate ${td.vertex_number}`)
             const co = this.vertexvector_morph[td.vertex_number].co
             if (co === undefined) {
                 throw Error()
             }
+            if (td.vertex_number === 4643) {
+                console.log("***************************************")
+                console.log(co)                
+            }
             vec3.sub(co, co, pr.getCenter())
             vec3.transformMat4(co, co, rotMatrix)
             vec3.add(co, co, pr.getCenter())
+            if (td.vertex_number === 4643) {
+                console.log(co)                
+            }
         }
     }
+
+    getVertexes(): VertexVector {return this.vertexvector_morph}
 }
 
 class BodySettings extends Map<string, number> {}

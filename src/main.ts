@@ -10,7 +10,17 @@ import {
     adjustCanvasSize,
     prepareViewport,
 } from "gl/util"
-// import { NodeJSFSAdapter } from "./filesystem/NodeJSFSAdapter"
+
+// with shift
+// [7]   [8]  [9] [-]
+// top   rot      zoom
+// [4]   [5]  [6] [+]
+// rot        rot zoom
+// [1]   [2]  [3]
+// front rot  left
+//            [.]
+//            center
+// without shift only zoom and rot as translate remain
 
 // makehuman-0.9.1-rc1a/src/makehuman.cpp, line 499
 export function main() {
@@ -38,8 +48,17 @@ export function main() {
     console.log("init poses")
     mesh.initPoses()
 
+    console.log(`before set pose: vertex[4643].co = ${mesh.getVertexes()[4643].co}`)
+    console.log(`expect                             [x: 1.55093 y: -4.87655 z: -0.823161]`)
+
     console.log("set pose")
-    mesh.setPose("180_right_upper_leg/ROT_ADJUST2", -80)
+    // mesh.setPose("180_right_upper_leg/ROT_ADJUST2", -80)
+    // mesh.setPose("180_right_upper_leg/ROT_BASE1", 70)
+    mesh.setPose("040_left_foot/ROT1", 60)
+
+    console.log(`after set pose: vertex[4643].co = ${mesh.getVertexes()[4643].co}`)
+    console.log(`expect                            [x: 1.55093 y: -4.76291 z: -0.886281]`)
+
     // console.log("render")
 
     // okay... this should be enough to render something...
