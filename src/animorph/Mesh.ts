@@ -104,6 +104,8 @@ export class Mesh {
  
     }
 
+
+
     setPose(target_name: string, morph_value: number) {
         if (!this.posemap.has(target_name)) {
             throw new Error(`a target with name "${target_name}" wasn't found in posemap`)
@@ -114,12 +116,15 @@ export class Mesh {
         } else {
             this.poses.set(target_name, morph_value)
         }
+    }
 
-        this.poses.forEach((morph_value, target_name) => {
+    update() {
+        // Map is not sorted but poses must be applied sorted by target_name
+        [...this.poses.keys()].sort().forEach( target_name => {
             const poseTarget = this.getPoseTargetForName(target_name)
+            const morph_value = this.poses.get(target_name)!
             this.doPose(target_name, morph_value, poseTarget!.getModVertex())
         })
-
         // applySkin();
         // applySmooth(2);
     }
@@ -141,7 +146,6 @@ export class Mesh {
             this.doPoseTranslation(pt, morph_value, modVertex)
         }
         for (const pr of rotations) {
-            console.log(`doPose(${target_name}, ${morph_value}) rotate, has 4643: ${modVertex.has(4643)}`)
             this.doPoseRotation(pr, morph_value, modVertex)
         }
     }
@@ -217,22 +221,13 @@ export class Mesh {
                     mat4.rotateZ(rotMatrix, rotMatrix, theta)
                     break
             }
-            // vertexvector_morph[td.vertex_number].co = ((vertexvector_morph[td.vertex_number].co - pr.getCenter()) * rotMatrix) + pr.getCenter();
-            // console.log(`rotate ${td.vertex_number}`)
             const co = this.vertexvector_morph[td.vertex_number].co
             if (co === undefined) {
                 throw Error()
             }
-            if (td.vertex_number === 4643) {
-                console.log("***************************************")
-                console.log(co)                
-            }
             vec3.sub(co, co, pr.getCenter())
             vec3.transformMat4(co, co, rotMatrix)
             vec3.add(co, co, pr.getCenter())
-            if (td.vertex_number === 4643) {
-                console.log(co)                
-            }
         }
     }
 

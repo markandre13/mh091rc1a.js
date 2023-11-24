@@ -14,13 +14,14 @@ export class PoseTranslation {
     private maxAngle: number = 0
     /// flag
     private normalize: boolean = false
-    //string inFilename;
+    inFilename?: string
     /// Can be used to influence the order of application of rotations and translations
     private cat: string = ""
 
     private mbLimb: boolean = false
 
     load(filename: string): boolean {
+        this.inFilename = filename
         const info = FileSystemAdapter.readFile(`${filename}.info`)
             .split("\n")
             .map((it) => it.trim())
@@ -94,22 +95,22 @@ export class PoseTranslation {
 
         // prettier-ignore
         let minX = 0, maxX = 0, minY = 0, maxY = 0, minZ = 0, maxZ = 0
-        for (const [it] of minXSet) {
+        for (const it of minXSet) {
             minX += it
         }
-        for (const [it] of maxXSet) {
+        for (const it of maxXSet) {
             maxX += it
         }
-        for (const [it] of minYSet) {
+        for (const it of minYSet) {
             minY += it
         }
-        for (const [it] of maxYSet) {
+        for (const it of maxYSet) {
             maxY += it
         }
-        for (const [it] of minZSet) {
+        for (const it of minZSet) {
             minZ += it
         }
-        for (const [it] of maxZSet) {
+        for (const it of maxZSet) {
             maxZ += it
         }
 
@@ -141,7 +142,9 @@ export class PoseTranslation {
     setNormalize(inNormalize: boolean) {
         this.normalize = inNormalize
     }
-    //const string &getFilename() const {return inFilename;}
+    getFilename() {
+        return this.inFilename
+    }
     getCat() {
         return this.cat
     }

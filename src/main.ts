@@ -10,6 +10,7 @@ import {
     adjustCanvasSize,
     prepareViewport,
 } from "gl/util"
+import screen from "./screen"
 
 // with shift
 // [7]   [8]  [9] [-]
@@ -48,24 +49,17 @@ export function main() {
     console.log("init poses")
     mesh.initPoses()
 
-    console.log(`before set pose: vertex[4643].co = ${mesh.getVertexes()[4643].co}`)
-    console.log(`expect                             [x: 1.55093 y: -4.87655 z: -0.823161]`)
-
     console.log("set pose")
-    // mesh.setPose("180_right_upper_leg/ROT_ADJUST2", -80)
-    // mesh.setPose("180_right_upper_leg/ROT_BASE1", 70)
+    mesh.setPose("020_right_foot/ROT1", 60)
     mesh.setPose("040_left_foot/ROT1", 60)
+    mesh.setPose("180_right_upper_leg/ROT_BASE1", 70)
+    mesh.update()
 
-    console.log(`after set pose: vertex[4643].co = ${mesh.getVertexes()[4643].co}`)
-    console.log(`expect                            [x: 1.55093 y: -4.76291 z: -0.886281]`)
-
-    // console.log("render")
-
-    // okay... this should be enough to render something...
-    const canvas = document.createElement("canvas")
-    canvas.style.width = "100vw"
-    canvas.style.height = "100vh"
+    console.log("render")
+    const canvas = screen
     document.body.style.overflow = "hidden"
+    document.body.style.margin = "0"
+    document.body.style.padding = "0"
     document.body.replaceChildren(canvas)
 
     renderMesh(canvas, mesh)

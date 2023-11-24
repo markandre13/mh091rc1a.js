@@ -10,8 +10,8 @@ export class MultiSet<T> {
     entries() {
         return this.array
     }
-    [Symbol.iterator](): IterableIterator<[number, T]> {
-        return this.array.entries()
+    [Symbol.iterator](): IterableIterator<T> {
+        return this.array[Symbol.iterator]()
     }
     last() {
         return this.array[this.array.length-1]

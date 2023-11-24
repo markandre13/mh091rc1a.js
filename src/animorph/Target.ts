@@ -17,7 +17,7 @@ export class Target extends Array<TargetData> {
             if (tokens.length === 4) {
                 const td: TargetData = {
                     vertex_number: parseInt(tokens[0]),
-                    morph_vector: vec3.fromValues(parseInt(tokens[0]), parseInt(tokens[1]), parseInt(tokens[2])),
+                    morph_vector: vec3.fromValues(parseFloat(tokens[1]), parseFloat(tokens[2]), parseFloat(tokens[3])),
                 }
                 this.push(td)
                 this.modVertex.push(td.vertex_number)
