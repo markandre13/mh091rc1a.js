@@ -108,7 +108,14 @@ export class Mesh {
     }
 
     private poseChanged = false
-
+    clearPose() {
+        if (this.poses.size === 0) {
+            return
+        }
+        this.poses.clear()
+        this.poseChanged = true
+        this.changed.trigger()
+    }
     setPose(target_name: string, morph_value: number) {
         // console.log(`${target_name} := ${morph_value}`)
         if (!this.posemap.has(target_name)) {
@@ -136,7 +143,6 @@ export class Mesh {
     }
 
     update() {
-        console.log(`update mesh`)
         if (this.poseChanged === false) {
             return
         }

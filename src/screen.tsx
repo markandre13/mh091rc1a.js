@@ -268,7 +268,8 @@ export default (mesh: Mesh) =>
                     />
                     <img src="images/ui/toolbar_body_det_real.png" title="Body details (realistic morphings)" />
                     <img src="images/ui/toolbar_poses_over.png" title="Poses" />
-                    <img src="images/ui/toolbar_reset.png" title="Reset mesh" />
+                    <img src="images/ui/toolbar_reset.png" title="Reset mesh" 
+                    onpointerdown={ () => mesh.clearPose() }/>
                 </div>
                 <div style={{ padding: "5px", fontWeight: "bold" }}>Poses</div>
                 <div id="panel" style={{ lineHeight: "0" }}>

@@ -54,7 +54,6 @@ export function main() {
     mesh.setPose("180_right_upper_leg/ROT_BASE1", 70)
     mesh.update()
 
-
     console.log("render")
     document.body.style.overflow = "hidden"
     document.body.style.margin = "0"
@@ -167,16 +166,13 @@ function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     }
     paint()
 
-    mesh.changed.add( () => {
-        console.log(`mesh changed`)
+    mesh.changed.add(() => {
         mesh.update()
-
         const vertex: number[] = []
         for (const v of mesh.vertexvector_morph) {
             vertex.push(v.co[0], v.co[1], v.co[2])
         }
         renderMesh.update(new Float32Array(vertex))
-
         paint()
     })
 
