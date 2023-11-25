@@ -113,56 +113,64 @@ interface PP {
     target?: string
     img?: HTMLImageElement
 }
-let d: PP[]
+let tiles: PP[]
 
 let selectedJoint: number | undefined = undefined
 
 function posesBodyPanel(mesh: Mesh) {
-    const panel = []
-    d = new Array<PP>(poseTargets.length)
+    const panel: HTMLElement[] = []
+    tiles = new Array<PP>(poseTargets.length)
     for (let jointIdx = 1; jointIdx < poseTargets.length; ++jointIdx) {
-        const target = poseTargets[jointIdx]
-        d[jointIdx] = { target }
+        panel.push(createTile(mesh, jointIdx))
+    }
+    return panel
+}
 
-        const img = (
+function createTile(mesh: Mesh, jointIdx: number): HTMLElement {
+    const target = poseTargets[jointIdx]
+        tiles[jointIdx] = { target }
+
+        const tileImg = (
             <img src={`images/ui/rotations_${jointIdx.toString().padStart(2, "0")}.png`} />
         ) as HTMLImageElement
-        d[jointIdx].img = img
-        panel.push(img)
+        tiles[jointIdx].img = tileImg
+        
         if (target === undefined) {
-            continue
+            return tileImg
         }
         const title = target.at(4)!.toUpperCase() + target.substring(5).replaceAll("_", " ")
-        img.title = title
-        img.onpointerenter = () => {
-            img.src = `images/ui/rotations_${jointIdx.toString().padStart(2, "0")}_over.png`
+        tileImg.title = title
+        tileImg.onpointerenter = () => {
+            tileImg.src = `images/ui/rotations_${jointIdx.toString().padStart(2, "0")}_over.png`
         }
-        img.onpointerleave = () => {
+        tileImg.onpointerleave = () => {
             if (selectedJoint !== jointIdx) {
-                img.src = `images/ui/rotations_${jointIdx.toString().padStart(2, "0")}.png`
+                tileImg.src = `images/ui/rotations_${jointIdx.toString().padStart(2, "0")}.png`
             }
         }
-        img.onpointerdown = () => {
-            if (jointIdx < d.length) {
+        tileImg.onpointerdown = () => {
+            if (jointIdx < tiles.length) {
                 const details = (
                     <>
                         <div style={{ lineHeight: "1.5" }}>{title}</div>
                     </>
                 )
                 mesh.posemap.forEach((x, key) => {
-                    if (key.startsWith(`${d[jointIdx].target}/`)) {
-                        details.push(<img width="64" height="64" title={key} src={`images/rot/${key}.png`} />)
+                    if (key.startsWith(`${tiles[jointIdx].target}/`)) {
+                        // value changes on: drag left & right / wheel
+                        // white: default, red: changed
+                        const detailImg = <img width="64" height="64" title={key} src={`images/rot/${key}.png`} /> as HTMLImageElement
+                        details.push(detailImg)
                     }
                 })
                 refs.details.replaceChildren(...details)
                 if (selectedJoint !== undefined && selectedJoint !== jointIdx) {
-                    d[selectedJoint].img!.src = `images/ui/rotations_${selectedJoint.toString().padStart(2, "0")}.png`
+                    tiles[selectedJoint].img!.src = `images/ui/rotations_${selectedJoint.toString().padStart(2, "0")}.png`
                 }
                 selectedJoint = jointIdx
             }
         }
-    }
-    return panel
+        return tileImg
 }
 
 export default (mesh: Mesh) =>
