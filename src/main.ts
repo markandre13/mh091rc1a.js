@@ -167,6 +167,19 @@ function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     }
     paint()
 
+    mesh.changed.add( () => {
+        console.log(`mesh changed`)
+        mesh.update()
+
+        const vertex: number[] = []
+        for (const v of mesh.vertexvector_morph) {
+            vertex.push(v.co[0], v.co[1], v.co[2])
+        }
+        renderMesh.update(new Float32Array(vertex))
+
+        paint()
+    })
+
     new ResizeObserver(paint).observe(canvas)
     let downX = 0,
         downY = 0,

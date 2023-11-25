@@ -8,18 +8,22 @@ import { PoseTarget } from "./PoseTarget"
 import { PoseTranslation } from "./PoseTranslation"
 import { PoseRotation, RotateAxis } from "./PoseRotation"
 import { mat4, vec3 } from "gl-matrix"
+import { Signal } from "toad.js"
+import { Vertex } from "./Vertex"
 
 class TargetMap extends Map<string, TargetEntry> {}
 class PoseMap extends Map<string, PoseEntry> {}
 
 // animorph-0.3/src/Mesh.cpp
 export class Mesh {
+    changed = new Signal()
+
     // faces
     facevector = new FaceVector()
 
     // vertices TODO: replace with Float32Array
     vertexvector_morph = new VertexVector() // morphed mesh
-    // vertexvector_morph_copy: VertexVector // copy of vertexvector_morph to reset vertexvector_morph and vertexvector_morph_only, used when animating/posing)
+    vertexvector_morph_copy?: VertexVector // copy of vertexvector_morph to reset vertexvector_morph and vertexvector_morph_only, used when animating/posing)
     // vertexvector_morph_only: VertexVector
     // vertexvector_orginal: vec3[]; // orginal mesh
     facegroup = new FaceGroup()
@@ -95,16 +99,18 @@ export class Mesh {
         //     skin_it++)
         // {
         //     SkinVertex &skinVertex = (*skin_it);
-        
+
         //     Vector3f centeroid(calcCenteroid(skinVertex.getLinkedMuscles(), vertexvector_morph));
-        
+
         //     Vector3f oriDist = vertexvector_morph[skinVertex.getSkinVertex()].co - centeroid;
         //     skinVertex.setOriginalDist(oriDist.getMagnitude());
         // }
- 
     }
 
+    private poseChanged = false
+
     setPose(target_name: string, morph_value: number) {
+        // console.log(`${target_name} := ${morph_value}`)
         if (!this.posemap.has(target_name)) {
             throw new Error(`a target with name "${target_name}" wasn't found in posemap`)
         }
@@ -112,7 +118,16 @@ export class Mesh {
         if (morph_value === 0) {
             this.poses.delete(target_name)
         } else {
+            if (this.poses.get(target_name) === morph_value) {
+                return
+            }
             this.poses.set(target_name, morph_value)
+        }
+
+        if (this.poseChanged === false) {
+            console.log(`trigger changed signal`)
+            this.poseChanged = true
+            this.changed.trigger()
         }
     }
     getPose(target_name: string): number {
@@ -121,8 +136,35 @@ export class Mesh {
     }
 
     update() {
+        console.log(`update mesh`)
+        if (this.poseChanged === false) {
+            return
+        }
+        this.poseChanged = false
+
+        if (this.vertexvector_morph_copy === undefined) {
+            this.vertexvector_morph_copy = new VertexVector(this.vertexvector_morph.length)
+            for (let i = 0; i < this.vertexvector_morph.length; ++i) {
+                const v = this.vertexvector_morph[i]
+                this.vertexvector_morph_copy[i] = new Vertex(v.co[0], v.co[1], v.co[2], v.no[0], v.no[1], v.no[2])
+            }
+        } else {
+            for (let i = 0; i < this.vertexvector_morph.length; ++i) {
+                const from = this.vertexvector_morph_copy[i]
+                const to = this.vertexvector_morph[i]
+                ;[to.co[0], to.co[1], to.co[2], to.no[0], to.no[1], to.no[2]] = [
+                    from.co[0],
+                    from.co[1],
+                    from.co[2],
+                    from.no[0],
+                    from.no[1],
+                    from.no[2],
+                ]
+            }
+        }
+
         // Map is not sorted but poses must be applied sorted by target_name
-        [...this.poses.keys()].sort().forEach( target_name => {
+        ;[...this.poses.keys()].sort().forEach((target_name) => {
             const poseTarget = this.getPoseTargetForName(target_name)
             const morph_value = this.poses.get(target_name)!
             this.doPose(target_name, morph_value, poseTarget!.getModVertex())
@@ -233,7 +275,9 @@ export class Mesh {
         }
     }
 
-    getVertexes(): VertexVector {return this.vertexvector_morph}
+    getVertexes(): VertexVector {
+        return this.vertexvector_morph
+    }
 }
 
 class BodySettings extends Map<string, number> {}
