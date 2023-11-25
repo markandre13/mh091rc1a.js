@@ -28,12 +28,7 @@ The goal learn about this version of MakeHuman and try to bring lost functionali
 An overview of this implementation is given in
 
 <!--
-[ ] clip pose values in ui
-[ ] reset
 [ ] morph
-[ ] some constraints do not work
-   [ ] toes
-   [ ] 180_right_upper_leg/ROT_BASE3
 [ ] how are normals handled (RenderMesh calculates them me thinks, but animorph should be able to do that)
 [ ] what does the collada support provide? shapekeys?
 [ ] collada, could we export the shapekeys and bind them to a bone?

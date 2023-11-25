@@ -192,8 +192,8 @@ function createDetail(mesh: Mesh, name: string) {
     const img = detail.children[0] as HTMLImageElement
     const txt = detail.children[1] as HTMLDivElement
     const setValue = (value: number) => {
-        mesh.setPose(name, value)
-        txt.innerText = Math.round(value).toString()
+        const v = mesh.setPose(name, value)
+        txt.innerText = Math.round(v).toString()
         if (value !== 0) {
             txt.style.color = "#f00"
         } else {

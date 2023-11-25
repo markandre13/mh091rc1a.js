@@ -117,16 +117,28 @@ export class Mesh {
         this.changed.trigger()
     }
     setPose(target_name: string, morph_value: number) {
-        // console.log(`${target_name} := ${morph_value}`)
+        const poseTarget = this.getPoseTargetForName(target_name)
+        if (poseTarget === undefined) {
+            throw Error(`unknown pose target ${target_name}`)
+        }
+        if (morph_value < poseTarget.getMinAngle()) {
+            morph_value = poseTarget.getMinAngle()
+        }
+        if (morph_value > poseTarget.getMaxAngle()) {
+            morph_value = poseTarget.getMaxAngle()
+        }
         if (!this.posemap.has(target_name)) {
             throw new Error(`a target with name "${target_name}" wasn't found in posemap`)
         }
 
         if (morph_value === 0) {
+            if (!this.poses.has(target_name)) {
+                return morph_value
+            }
             this.poses.delete(target_name)
         } else {
             if (this.poses.get(target_name) === morph_value) {
-                return
+                return morph_value
             }
             this.poses.set(target_name, morph_value)
         }
@@ -136,6 +148,7 @@ export class Mesh {
             this.poseChanged = true
             this.changed.trigger()
         }
+        return morph_value
     }
     getPose(target_name: string): number {
         const p = this.poses.get(target_name)
