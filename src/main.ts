@@ -27,6 +27,7 @@ import screen from "./screen"
 export function main() {
     console.log(`mh091rc1a (Makehuman 0.9.1-rc1a clone)`)
     FileSystemAdapter.setInstance(new HTTPFSAdapter())
+
     const mesh = new Mesh()
     mesh.loadMeshFactory("base.vertices", "base.faces")
     // mesh.loadMaterialFactory("base.materials", "base.colors")
@@ -45,7 +46,7 @@ export function main() {
     mesh.loadPoseTargetsFactory("rotations")
     // mesh.loadCharactersFactory("bs_data")
 
-    console.log("init poses")
+    // console.log("init poses")
     // mesh.initPoses()
     // console.log("set pose")
     // mesh.setPose("020_right_foot/ROT1", 60)
@@ -53,7 +54,6 @@ export function main() {
     // mesh.setPose("180_right_upper_leg/ROT_BASE1", 70)
     // mesh.update()
 
-    // mesh.posemap.forEach( (it, k) => console.log(k))
 
     console.log("render")
     document.body.style.overflow = "hidden"
