@@ -215,8 +215,13 @@ function createDetail(mesh: Mesh, name: string) {
         ev.preventDefault()
         img.src = img0
     }
+    img.oncontextmenu = (ev: MouseEvent) => {
+        ev.preventDefault()
+        // setValue(0)
+    }
     img.onpointerdown = (ev: PointerEvent) => {
         ev.preventDefault()
+        img.setPointerCapture(ev.pointerId)
         switch (ev.button) {
             case 0:
                 downX = ev.x

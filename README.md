@@ -12,7 +12,7 @@ This repository ports parts of Makehuman 0.9.1-rc1a from C++ to Typescript.
 
 The algorithms are described in [Ideas and methods for modeling 3D human figures](https://doi.org/10.1145/1341771.1341782).
 
-Current status: rotate and pose human (usability ain't right yet)
+Current status: rotate and pose human
 
 ### WHY
 

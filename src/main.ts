@@ -185,6 +185,7 @@ function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
         downY = 0,
         buttonDown = false
     canvas.onpointerdown = (ev: PointerEvent) => {
+        canvas.setPointerCapture(ev.pointerId)
         buttonDown = true
         // console.log(ev)
         lastX = downX = ev.x
