@@ -47,12 +47,12 @@ export function main() {
     // mesh.loadCharactersFactory("bs_data")
 
     // console.log("init poses")
-    // mesh.initPoses()
-    // console.log("set pose")
-    // mesh.setPose("020_right_foot/ROT1", 60)
-    // mesh.setPose("040_left_foot/ROT1", 60)
-    // mesh.setPose("180_right_upper_leg/ROT_BASE1", 70)
-    // mesh.update()
+    mesh.initPoses()
+    console.log("set pose")
+    mesh.setPose("020_right_foot/ROT1", 60)
+    mesh.setPose("040_left_foot/ROT1", 60)
+    mesh.setPose("180_right_upper_leg/ROT_BASE1", 70)
+    mesh.update()
 
 
     console.log("render")

@@ -108,18 +108,18 @@ interface RefTypes {
 }
 const refs: RefTypes = {} as any
 
-interface PP {
+interface Tile {
     // title: string
-    target?: string
+    targetName?: string
     img?: HTMLImageElement
 }
-let tiles: PP[]
+let tiles: Tile[]
 
 let selectedJoint: number | undefined = undefined
 
 function posesBodyPanel(mesh: Mesh) {
     const panel: HTMLElement[] = []
-    tiles = new Array<PP>(poseTargets.length)
+    tiles = new Array<Tile>(poseTargets.length)
     for (let jointIdx = 1; jointIdx < poseTargets.length; ++jointIdx) {
         panel.push(createTile(mesh, jointIdx))
     }
@@ -128,49 +128,117 @@ function posesBodyPanel(mesh: Mesh) {
 
 function createTile(mesh: Mesh, jointIdx: number): HTMLElement {
     const target = poseTargets[jointIdx]
-        tiles[jointIdx] = { target }
+    tiles[jointIdx] = { targetName: target }
 
-        const tileImg = (
-            <img src={`images/ui/rotations_${jointIdx.toString().padStart(2, "0")}.png`} />
-        ) as HTMLImageElement
-        tiles[jointIdx].img = tileImg
-        
-        if (target === undefined) {
-            return tileImg
-        }
-        const title = target.at(4)!.toUpperCase() + target.substring(5).replaceAll("_", " ")
-        tileImg.title = title
-        tileImg.onpointerenter = () => {
-            tileImg.src = `images/ui/rotations_${jointIdx.toString().padStart(2, "0")}_over.png`
-        }
-        tileImg.onpointerleave = () => {
-            if (selectedJoint !== jointIdx) {
-                tileImg.src = `images/ui/rotations_${jointIdx.toString().padStart(2, "0")}.png`
-            }
-        }
-        tileImg.onpointerdown = () => {
-            if (jointIdx < tiles.length) {
-                const details = (
-                    <>
-                        <div style={{ lineHeight: "1.5" }}>{title}</div>
-                    </>
-                )
-                mesh.posemap.forEach((x, key) => {
-                    if (key.startsWith(`${tiles[jointIdx].target}/`)) {
-                        // value changes on: drag left & right / wheel
-                        // white: default, red: changed
-                        const detailImg = <img width="64" height="64" title={key} src={`images/rot/${key}.png`} /> as HTMLImageElement
-                        details.push(detailImg)
-                    }
-                })
-                refs.details.replaceChildren(...details)
-                if (selectedJoint !== undefined && selectedJoint !== jointIdx) {
-                    tiles[selectedJoint].img!.src = `images/ui/rotations_${selectedJoint.toString().padStart(2, "0")}.png`
-                }
-                selectedJoint = jointIdx
-            }
-        }
+    const tileImg = (
+        <img src={`images/ui/rotations_${jointIdx.toString().padStart(2, "0")}.png`} />
+    ) as HTMLImageElement
+    tiles[jointIdx].img = tileImg
+
+    if (target === undefined) {
         return tileImg
+    }
+    const title = target.at(4)!.toUpperCase() + target.substring(5).replaceAll("_", " ")
+    tileImg.title = title
+    tileImg.onpointerenter = () => {
+        tileImg.src = `images/ui/rotations_${jointIdx.toString().padStart(2, "0")}_over.png`
+    }
+    tileImg.onpointerleave = () => {
+        if (selectedJoint !== jointIdx) {
+            tileImg.src = `images/ui/rotations_${jointIdx.toString().padStart(2, "0")}.png`
+        }
+    }
+    tileImg.onpointerdown = () => {
+        if (jointIdx < tiles.length) {
+            const details = (
+                <>
+                    <div style={{ padding: "5px", fontWeight: "bold" }}>{title}</div>
+                </>
+            )
+            mesh.posemap.forEach((poseEntry, name) => {
+                if (name.startsWith(`${tiles[jointIdx].targetName}/`)) {
+                    // value changes on: drag left & right / wheel
+                    // white: default, red: changed
+                    // const detailImg = <img width="64" height="64" title={key} src={`images/rot/${key}.png`} /> as HTMLImageElement
+                    details.push(createDetail(mesh, name))
+                }
+            })
+            refs.details.replaceChildren(...details)
+            if (selectedJoint !== undefined && selectedJoint !== jointIdx) {
+                tiles[selectedJoint].img!.src = `images/ui/rotations_${selectedJoint.toString().padStart(2, "0")}.png`
+            }
+            selectedJoint = jointIdx
+        }
+    }
+    return tileImg
+}
+
+// value changes on: drag left & right / wheel
+// white: default, red: changed
+function createDetail(mesh: Mesh, name: string) {
+    const img0 = `images/rot/${name}.png`
+    const img1 = `images/rot/${name}_over.png`
+
+    const detail = (
+        <div style={{ display: "inline-block", textAlign: "center" }}>
+            <img width="64" height="64" title={name} src={img0} />
+            <div></div>
+        </div>
+    ) as HTMLElement
+
+    let lastValue = 0,
+        downX: number | undefined
+
+    const img = detail.children[0] as HTMLImageElement
+    const txt = detail.children[1] as HTMLDivElement
+    const setValue = (value: number) => {
+        mesh.setPose(name, value)
+        txt.innerText = Math.round(value).toString()
+        if (value !== 0) {
+            txt.style.color = "#f00"
+        } else {
+            txt.style.color = ""
+        }
+    }
+    setValue(mesh.getPose(name))
+
+    // TODO
+    // * grab on click
+    // * disable browser menu on right click
+    // * update and redraw mesh
+
+    img.onpointerenter = (ev: PointerEvent) => {
+        ev.preventDefault()
+        img.src = img1
+    }
+    img.onpointerleave = (ev: PointerEvent) => {
+        ev.preventDefault()
+        img.src = img0
+    }
+    img.onpointerdown = (ev: PointerEvent) => {
+        ev.preventDefault()
+        switch (ev.button) {
+            case 0:
+                downX = ev.x
+                lastValue = mesh.getPose(name)
+                break
+            case 2:
+                setValue(0)
+                break
+        }
+        img.onpointerup = (ev: PointerEvent) => {
+            ev.preventDefault()
+            downX = undefined
+        }
+        img.onpointermove = (ev: PointerEvent) => {
+            ev.preventDefault()
+            if (downX !== undefined) {
+                setValue(lastValue! + ev.x - downX)
+            }
+        }
+    }
+
+    return detail
 }
 
 export default (mesh: Mesh) =>
@@ -184,10 +252,9 @@ export default (mesh: Mesh) =>
                     top: "0",
                     bottom: "0",
                     width: "192px",
-                    lineHeight: "0",
                 }}
             >
-                <div id="toolbar">
+                <div id="toolbar" style={{ lineHeight: "0" }}>
                     <img src="images/ui/toolbar_load.png" title="Load body setting" />
                     <img src="images/ui/toolbar_save.png" title="Save body setting" />
                     <img
@@ -198,11 +265,13 @@ export default (mesh: Mesh) =>
                     <img src="images/ui/toolbar_poses_over.png" title="Poses" />
                     <img src="images/ui/toolbar_reset.png" title="Reset mesh" />
                 </div>
-
-                <div id="panel">{...posesBodyPanel(mesh)}</div>
+                <div style={{ padding: "5px", fontWeight: "bold" }}>Poses</div>
+                <div id="panel" style={{ lineHeight: "0" }}>
+                    {...posesBodyPanel(mesh)}
+                </div>
                 <div id="details" set={new Reference(refs, "details")}></div>
-                {/* 
-            
+                {/*
+
             Body details (realistic morphings)
 
             <img src="images/ui/body_01.png" />

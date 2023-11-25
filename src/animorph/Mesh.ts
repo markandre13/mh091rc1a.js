@@ -104,8 +104,6 @@ export class Mesh {
  
     }
 
-
-
     setPose(target_name: string, morph_value: number) {
         if (!this.posemap.has(target_name)) {
             throw new Error(`a target with name "${target_name}" wasn't found in posemap`)
@@ -116,6 +114,10 @@ export class Mesh {
         } else {
             this.poses.set(target_name, morph_value)
         }
+    }
+    getPose(target_name: string): number {
+        const p = this.poses.get(target_name)
+        return p === undefined ? 0 : p
     }
 
     update() {
