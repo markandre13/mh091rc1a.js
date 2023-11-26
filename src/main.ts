@@ -12,18 +12,6 @@ import {
 } from "gl/util"
 import screen from "./screen"
 
-// with shift
-// [7]   [8]  [9] [-]
-// top   rot      zoom
-// [4]   [5]  [6] [+]
-// rot        rot zoom
-// [1]   [2]  [3]
-// front rot  left
-//            [.]
-//            center
-// without shift only zoom and rot as translate remain
-
-// makehuman-0.9.1-rc1a/src/makehuman.cpp, line 499
 export function main() {
     console.log(`mh091rc1a (Makehuman 0.9.1-rc1a clone)`)
     FileSystemAdapter.setInstance(new HTTPFSAdapter())

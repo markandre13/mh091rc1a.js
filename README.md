@@ -39,4 +39,17 @@ An overview of this implementation is given in
   [ ] save/load pose
   [ ] save/load morph
   [ ] export collada
+
+[ ] numpad keys to implement
+with shift
+[7]   [8]  [9] [-]
+top   rot      zoom
+[4]   [5]  [6] [+]
+rot        rot zoom
+[1]   [2]  [3]
+front rot  left
+           [.]
+           center
+without shift only zoom and rot as translate remain
+
 -->
