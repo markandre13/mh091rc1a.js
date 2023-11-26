@@ -10,6 +10,7 @@ export class Selector {
     cellRatio: number
     points: Point[] = [];
     labels: string[]
+    private dists?: number[]
 
     constructor(rows: number, cols: number, labels: string[]) {
         this.rows = rows
@@ -31,24 +32,31 @@ export class Selector {
         }
     }
     setCursorPos(x: number, y: number) {
+        this.dists = undefined
         x = Math.max(Math.min(x, this.width), 0)
         y = Math.max(Math.min(y, this.height), 0)
         this.cursorPos.x = x
         this.cursorPos.y = y
     }
     getDists() {
-        const ret: number[] = []
+        if (this.dists !== undefined) {
+            return this.dists
+        }
+        this.dists = []
+        
+        let x = this.cursorPos.x, y = this.height - this.cursorPos.y
+
         for (const tmp of this.points) {
             const dist = Math.sqrt(
-                Math.pow(tmp.x - this.cursorPos.x, 2) + Math.pow((tmp.y - this.cursorPos.y) * this.cellRatio, 2)
+                Math.pow(tmp.x - x, 2) + Math.pow((tmp.y - y) * this.cellRatio, 2)
             )
             const value = 1 - dist / this.maxValue
             if (value > 0) {
-                ret.push(value)
+                this.dists.push(value)
             } else {
-                ret.push(0)
+                this.dists.push(0)
             }
         }
-        return ret
+        return this.dists
     }
 }

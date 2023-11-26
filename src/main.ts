@@ -159,9 +159,7 @@ function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     paint()
 
     mesh.changed.add(() => {
-        console.log(`MESH CHANGED`)
         requestAnimationFrame(() => {
-            console.log(`REDRAW`)
             mesh.update()
             const vertex: number[] = []
             for (const v of mesh.vertexvector_morph) {

@@ -24,7 +24,6 @@ export class Mesh {
 
     private markDirty() {
         if (this.dirty === false) {
-            console.log(`MARK DIRTY`)
             this.dirty = true
             this.changed.trigger()
         }
@@ -177,11 +176,9 @@ export class Mesh {
     }
 
     update() {
-        console.log("MESH UPDATE")
         // this.updateMorph()
         this.updatePose()
         this.dirty = false
-        console.log("MESH UPDATE: DONE")
     }
 
     updatePose() {
@@ -366,12 +363,6 @@ export class Mesh {
         }
 
         this.markDirty()
-
-        // if (this.poseChanged === false) {
-        //     console.log(`trigger changed signal`)
-        //     this.poseChanged = true
-        //     this.changed.trigger()
-        // }
         return morph_value
     }
     getMorph(target_name: string): number {

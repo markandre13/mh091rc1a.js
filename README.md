@@ -12,7 +12,7 @@ This repository ports parts of Makehuman 0.9.1-rc1a from C++ to Typescript.
 
 The algorithms are described in [Ideas and methods for modeling 3D human figures](https://doi.org/10.1145/1341771.1341782).
 
-Current status: rotate and pose human
+Current status: one can morph and pose but the combination results in strange errors
 
 ### WHY
 
@@ -32,10 +32,8 @@ Some changes to the original
 
 <!--
 
-
+[ ] combining character morph and pose gets very wrong results
 [ ] rotate body relative to pointerdown position
-[ ] detail morph (WIP)
-[ ] character morph
 [ ] camera move (for re-use in makehuman.js)
 [ ] Mesh.calcNormals() !!!
 [ ] what does the collada support provide? shapekeys?
