@@ -10,6 +10,8 @@ interface Tile {
     // title: string
     targetName?: string
     img?: HTMLImageElement
+    imgSrc?: string
+    imgSrcOver?: string
 }
 let tiles: Tile[]
 
@@ -52,38 +54,48 @@ function createTile(mesh: Mesh, tileIdx: number): HTMLElement {
         }
     }
     src = `${src}_${num.toString().padStart(2, "0")}`
-    const tileImg = (<img src={`images/ui/${src}.png`} />) as HTMLImageElement
-    if (tileIdx < detailTargets.length) {
-        const name = detailTargets[tileIdx]
-        if (name !== undefined) {
-            const title = name.at(0)!.toUpperCase() + name.substring(1)
-            tileImg.title = title
-            tileImg.onpointerenter = () => {
-                tileImg.src = `images/ui/${src}_over.png`
-            }
-            tileImg.onpointerleave = () => {
-                tileImg.src = `images/ui/${src}.png`
-            }
-            tileImg.onpointerdown = () => {
-                const details = (
-                    <>
-                        <div style={{ padding: "5px", fontWeight: "bold" }}>{title}</div>
-                    </>
-                )
-                mesh.targetmap.forEach((targetEntry, name) => {
+    tiles[tileIdx].imgSrc = `images/ui/${src}.png`
+    tiles[tileIdx].imgSrcOver = `images/ui/${src}_over.png`
 
-                    if (name.startsWith(`${tiles[tileIdx].targetName}/`)) {
-                        const detailImg = <img width="64" height="64" title={name} src={`images/target/${name.substring(0, name.length-7)}.png`} /> as HTMLImageElement
-                        details.push(detailImg)
-                        // details.push(createDetail(mesh, name))
-                    }
-                })
-                refs.details.replaceChildren(...details)
-                // if (selectedJoint !== undefined && selectedJoint !== jointIdx) {
-                //     tiles[selectedJoint].img!.src = `images/ui/rotations_${selectedJoint.toString().padStart(2, "0")}.png`
-                // }
-                selectedTile = tileIdx
+    const tileImg = (<img src={tiles[tileIdx].imgSrc} />) as HTMLImageElement
+    const name = detailTargets[tileIdx]
+    if (name !== undefined) {
+        const title = name.at(0)!.toUpperCase() + name.substring(1).replace("_", " ")
+        tileImg.title = title
+        tileImg.onpointerenter = () => {
+            tileImg.src = tiles[tileIdx].imgSrcOver!
+        }
+        tileImg.onpointerleave = () => {
+            if (selectedTile !== tileIdx) {
+                tileImg.src = tiles[tileIdx].imgSrc!
             }
+        }
+        tileImg.onpointerdown = () => {
+            const details = (
+                <>
+                    <div style={{ padding: "5px", fontWeight: "bold" }}>{title}</div>
+                </>
+            )
+            mesh.targetmap.forEach((targetEntry, name) => {
+                if (name.startsWith(`${tiles[tileIdx].targetName}/`)) {
+                    const detailImg = (
+                        <img
+                            width="64"
+                            height="64"
+                            title={name}
+                            src={`images/target/${name.substring(0, name.length - 7)}.png`}
+                        />
+                    ) as HTMLImageElement
+                    details.push(detailImg)
+                    // details.push(createDetail(mesh, name))
+                }
+            })
+            refs.details.replaceChildren(...details)
+            
+            if (selectedTile !== undefined && selectedTile !== tileIdx) {
+                tiles[selectedTile].img!.src = tiles[selectedTile].imgSrc!
+            }
+            selectedTile = tileIdx
         }
     }
     tiles[tileIdx].img = tileImg

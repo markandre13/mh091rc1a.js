@@ -31,7 +31,9 @@ Some changes to the original
 * selected controls stay highlighted
 
 <!--
-[ ] morph
+[ ] detail morph
+[ ] character morph
+[ ] camera move (for re-use in makehuman.js)
 [ ] how are normals handled (RenderMesh calculates them me thinks, but animorph should be able to do that)
 [ ] what does the collada support provide? shapekeys?
 [ ] collada, could we export the shapekeys and bind them to a bone?
