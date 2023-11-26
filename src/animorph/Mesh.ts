@@ -120,17 +120,14 @@ export class Mesh {
         // }
     }
     clear() {
-        console.log(`Mesh.clear()`)
         this.clearMorph()
         this.clearPose()
     }
     clearMorph() {
-        console.log(`Mesh.clearMorph()`)
         if (this.bodyset.size === 0) {
             return
         }
         this.bodyset.forEach((value, name) => this.doMorph(name, 0))
-        console.log(`Mesh.clearMorph() done`)
         this.markDirty()
     }
     clearPose() {
@@ -184,6 +181,7 @@ export class Mesh {
         // this.updateMorph()
         this.updatePose()
         this.dirty = false
+        console.log("MESH UPDATE: DONE")
     }
 
     updatePose() {
@@ -328,7 +326,6 @@ export class Mesh {
         }
     }
     doMorph(target_name: string, morph_value: number) {
-        console.log(`doMorph(${target_name}, ${morph_value})`)
         if (morph_value < 0) {
             morph_value = 0
         }

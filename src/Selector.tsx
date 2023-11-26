@@ -1,8 +1,8 @@
 import { Point } from "Point"
 
 export class Selector {
-    height = 192;
-    width = 104;
+    height = 104;
+    width = 192;
     cursorPos: Point = { x: 96, y: 52 };
     rows: number
     cols: number
@@ -31,6 +31,8 @@ export class Selector {
         }
     }
     setCursorPos(x: number, y: number) {
+        x = Math.max(Math.min(x, this.width), 0)
+        y = Math.max(Math.min(y, this.height), 0)
         this.cursorPos.x = x
         this.cursorPos.y = y
     }
