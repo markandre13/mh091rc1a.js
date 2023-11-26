@@ -13,3 +13,5 @@ export function characterPanel(mesh: Mesh) {
         </>
     )
 }
+
+
