@@ -118,7 +118,7 @@ export default (mesh: Mesh) => {
         </>
     ) as Fragment
 
-    setTab(mesh, toolbarDefinition[3])
+    setTab(mesh, toolbarDefinition[2])
 
     return page
 }

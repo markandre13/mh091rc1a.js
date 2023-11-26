@@ -31,17 +31,19 @@ Some changes to the original
 * selected controls stay highlighted
 
 <!--
+
+
 [ ] rotate body relative to pointerdown position
 [ ] detail morph (WIP)
 [ ] character morph
 [ ] camera move (for re-use in makehuman.js)
-[ ] how are normals handled (RenderMesh calculates them me thinks, but animorph should be able to do that)
+[ ] Mesh.calcNormals() !!!
 [ ] what does the collada support provide? shapekeys?
 [ ] collada, could we export the shapekeys and bind them to a bone?
 [ ] just for fun
   [ ] the MH background with the logo
   [ ] uv & texture?
-  [ ] subdivision?
+  [ ] Mesh.calcSubsurf()
   [ ] save/load pose
   [ ] save/load morph
   [ ] export collada
