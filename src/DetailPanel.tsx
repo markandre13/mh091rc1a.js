@@ -4,13 +4,13 @@ import { Reference } from "toad.jsx/lib/jsx-runtime"
 interface RefTypes {
     details: HTMLElement
 }
-const refs: RefTypes = {} as any
+export const refs: RefTypes = {} as any
 
 export function bodyDetailsPanel(mesh: Mesh) {
     return (
         <>
             <div style={{ padding: "5px", fontWeight: "bold" }}>Body Details</div>
-            <div id="panel" style={{ lineHeight: "0" }}>
+            <div style={{lineHeight: "0"}}>
                 <img src="images/ui/body_01.png" />
                 <img src="images/ui/body_02.png" />
                 <img src="images/ui/face_01.png" />

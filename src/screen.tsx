@@ -2,6 +2,7 @@ import { posesBodyPanel } from "PosePanel"
 import { Mesh } from "animorph/Mesh"
 import { bodyDetailsPanel } from "DetailPanel"
 import { Fragment, Reference } from "toad.jsx/lib/jsx-runtime"
+import { characterPanel } from "CharacterPanel"
 
 interface RefTypes {
     panel: HTMLDivElement
@@ -28,7 +29,12 @@ interface ToolDef {
 const toolbarDefinition: ToolDef[] = [
     { id: TAB.LOAD, file: "load", desc: "Load body setting" },
     { id: TAB.SAVE, file: "save", desc: "Save body setting" },
-    { id: TAB.CHARACTER, file: "charac_sett", desc: "Character setting (somatypes, shapes, age, etc...)" },
+    {
+        id: TAB.CHARACTER,
+        file: "charac_sett",
+        desc: "Character setting (somatypes, shapes, age, etc...)",
+        render: (mesh: Mesh) => characterPanel(mesh),
+    },
     {
         id: TAB.DETAILS,
         file: "body_det_real",
