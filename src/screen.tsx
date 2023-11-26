@@ -95,7 +95,7 @@ export default (mesh: Mesh) => {
             >
                 <div id="toolbar" style={{ lineHeight: "0" }}>
                     {...toolbarPanel(mesh)}
-                    <img src="images/ui/toolbar_reset.png" title="Reset mesh" onpointerdown={() => mesh.clearPose()} />
+                    <img src="images/ui/toolbar_reset.png" title="Reset mesh" onpointerdown={() => mesh.clear()} />
                 </div>
                 <div set={new Reference(refs, "panel")}></div>
             </div>

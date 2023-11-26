@@ -19,12 +19,23 @@ class PoseMap extends Map<string, PoseEntry> {}
 export class Mesh {
     changed = new Signal()
 
+    private dirty = false
+    private poseChanged = false
+
+    private markDirty() {
+        if (this.dirty === false) {
+            console.log(`MARK DIRTY`)
+            this.dirty = true
+            this.changed.trigger()
+        }
+    }
+
     // faces
     facevector = new FaceVector()
 
     // vertices TODO: replace with Float32Array
     vertexvector_morph = new VertexVector() // morphed mesh
-    vertexvector_morph_copy?: VertexVector // copy of vertexvector_morph to reset vertexvector_morph and vertexvector_morph_only, used when animating/posing)
+    vertexvector_morph_copy?: VertexVector  // copy of vertexvector_morph to reset vertexvector_morph and vertexvector_morph_only, used when animating/posing)
     // vertexvector_morph_only: VertexVector
     // vertexvector_orginal: vec3[]; // orginal mesh
     facegroup = new FaceGroup()
@@ -108,15 +119,27 @@ export class Mesh {
         //     skinVertex.setOriginalDist(oriDist.getMagnitude());
         // }
     }
-
-    private poseChanged = false
+    clear() {
+        console.log(`Mesh.clear()`)
+        this.clearMorph()
+        this.clearPose()
+    }
+    clearMorph() {
+        console.log(`Mesh.clearMorph()`)
+        if (this.bodyset.size === 0) {
+            return
+        }
+        this.bodyset.forEach((value, name) => this.doMorph(name, 0))
+        console.log(`Mesh.clearMorph() done`)
+        this.markDirty()
+    }
     clearPose() {
         if (this.poses.size === 0) {
             return
         }
         this.poses.clear()
         this.poseChanged = true
-        this.changed.trigger()
+        this.markDirty()
     }
     setPose(target_name: string, morph_value: number) {
         const poseTarget = this.getPoseTargetForName(target_name)
@@ -147,13 +170,20 @@ export class Mesh {
 
         if (this.poseChanged === false) {
             this.poseChanged = true
-            this.changed.trigger()
+            this.markDirty()
         }
         return morph_value
     }
     getPose(target_name: string): number {
         const p = this.poses.get(target_name)
         return p === undefined ? 0 : p
+    }
+
+    update() {
+        console.log("MESH UPDATE")
+        // this.updateMorph()
+        this.updatePose()
+        this.dirty = false
     }
 
     updatePose() {
@@ -298,6 +328,7 @@ export class Mesh {
         }
     }
     doMorph(target_name: string, morph_value: number) {
+        console.log(`doMorph(${target_name}, ${morph_value})`)
         if (morph_value < 0) {
             morph_value = 0
         }
@@ -336,6 +367,8 @@ export class Mesh {
             }
             this.bodyset.set(target_name, morph_value)
         }
+
+        this.markDirty()
 
         // if (this.poseChanged === false) {
         //     console.log(`trigger changed signal`)

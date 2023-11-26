@@ -62,7 +62,7 @@ function createTile(mesh: Mesh, jointIdx: number): HTMLElement {
             )
             mesh.posemap.forEach((poseEntry, name) => {
                 if (name.startsWith(`${tiles[jointIdx].targetName}/`)) {
-                    details.push(createDetail(mesh, name))
+                    details.push(createKnob(mesh, name))
                 }
             })
             refs.details.replaceChildren(...details)
@@ -77,7 +77,7 @@ function createTile(mesh: Mesh, jointIdx: number): HTMLElement {
 
 // value changes on: drag left & right / wheel
 // white: default, red: changed
-function createDetail(mesh: Mesh, name: string) {
+function createKnob(mesh: Mesh, name: string) {
     const img0 = `images/rot/${name}.png`
     const img1 = `images/rot/${name}_over.png`
 
@@ -104,11 +104,6 @@ function createDetail(mesh: Mesh, name: string) {
     }
     setValue(mesh.getPose(name))
 
-    // TODO
-    // * grab on click
-    // * disable browser menu on right click
-    // * update and redraw mesh
-
     img.onpointerenter = (ev: PointerEvent) => {
         ev.preventDefault()
         img.src = img1
@@ -119,7 +114,6 @@ function createDetail(mesh: Mesh, name: string) {
     }
     img.oncontextmenu = (ev: MouseEvent) => {
         ev.preventDefault()
-        // setValue(0)
     }
     img.onpointerdown = (ev: PointerEvent) => {
         ev.preventDefault()
@@ -133,15 +127,15 @@ function createDetail(mesh: Mesh, name: string) {
                 setValue(0)
                 break
         }
-        img.onpointerup = (ev: PointerEvent) => {
-            ev.preventDefault()
-            downX = undefined
-        }
-        img.onpointermove = (ev: PointerEvent) => {
-            ev.preventDefault()
-            if (downX !== undefined) {
-                setValue(lastValue! + ev.x - downX)
-            }
+    }
+    img.onpointerup = (ev: PointerEvent) => {
+        ev.preventDefault()
+        downX = undefined
+    }
+    img.onpointermove = (ev: PointerEvent) => {
+        ev.preventDefault()
+        if (downX !== undefined) {
+            setValue(lastValue! + ev.x - downX)
         }
     }
 

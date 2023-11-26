@@ -78,20 +78,11 @@ function createTile(mesh: Mesh, tileIdx: number): HTMLElement {
             )
             mesh.targetmap.forEach((targetEntry, name) => {
                 if (name.startsWith(`${tiles[tileIdx].targetName}/`)) {
-                    const detailImg = (
-                        <img
-                            width="64"
-                            height="64"
-                            title={name}
-                            src={`images/target/${name.substring(0, name.length - 7)}.png`}
-                        />
-                    ) as HTMLImageElement
-                    details.push(detailImg)
-                    // details.push(createDetail(mesh, name))
+                    details.push(createKnob(mesh, name))
                 }
             })
             refs.details.replaceChildren(...details)
-            
+
             if (selectedTile !== undefined && selectedTile !== tileIdx) {
                 tiles[selectedTile].img!.src = tiles[selectedTile].imgSrc!
             }
@@ -100,6 +91,84 @@ function createTile(mesh: Mesh, tileIdx: number): HTMLElement {
     }
     tiles[tileIdx].img = tileImg
     return tileImg
+}
+
+function createKnob(mesh: Mesh, name: string) {
+    const imgSrc = `images/target/${name.substring(0, name.length - 7)}.png`
+
+    const detail = (
+        <div style={{ display: "inline-block", textAlign: "center" }}>
+            <img width="64" height="64" title={name} src={imgSrc} />
+            <div></div>
+        </div>
+    ) as HTMLElement
+
+    let lastValue = 0,
+        downX: number | undefined
+
+    const img = detail.children[0] as HTMLImageElement
+    const txt = detail.children[1] as HTMLDivElement
+    const setValue = (value: number) => {
+        value /= 100.0
+        const v = mesh.doMorph(name, value)
+        txt.innerText = v.toPrecision(2)
+        if (isZero(value)) {
+            value = 0
+        }
+        if (isEqual(value, 1)) {
+            value = 1
+        }
+        if (v !== 0) {
+            txt.style.color = "#f00"
+        } else {
+            txt.style.color = ""
+        }
+    }
+    setValue(mesh.getMorph(name) * 100)
+
+    img.onpointerenter = (ev: PointerEvent) => {
+        ev.preventDefault()
+    }
+    img.onpointerleave = (ev: PointerEvent) => {
+        ev.preventDefault()
+    }
+    img.oncontextmenu = (ev: MouseEvent) => {
+        ev.preventDefault()
+    }
+    img.onpointerdown = (ev: PointerEvent) => {
+        ev.preventDefault()
+        img.setPointerCapture(ev.pointerId)
+        switch (ev.button) {
+            case 0:
+                lastValue = mesh.getMorph(name) * 100
+                downX = ev.x
+                break
+            case 2:
+                setValue(0)
+                break
+        }
+    }
+    img.onpointerup = (ev: PointerEvent) => {
+        ev.preventDefault()
+        downX = undefined
+    }
+    img.onpointermove = (ev: PointerEvent) => {
+        ev.preventDefault()
+        if (downX !== undefined) {
+            setValue(lastValue! + ev.x - downX)
+        }
+    }
+
+    return detail
+}
+
+const epsilon = 0.00001
+
+function isZero(a: number): boolean {
+    return Math.abs(a) <= epsilon
+}
+function isEqual(a: number, b: number) {
+    return isZero(a - b)
 }
 
 // prettier-ignore
