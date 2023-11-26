@@ -6,75 +6,81 @@ interface RefTypes {
 }
 export const refs: RefTypes = {} as any
 
+interface Tile {
+    // title: string
+    targetName?: string
+    img?: HTMLImageElement
+}
+let tiles: Tile[]
+
+let selectedJoint: number | undefined = undefined
+
+// TargetSelectionListener.cpp
+
+// Torso / torso_width_min_target
+// Head / head001 ... head_frontal_vertex
+
+// ./makehuman-0.9.1-rc1a/pixmaps/tgimg/head/head_frontal_vertex.png
+// ./makehuman-0.9.1-rc1a/data/targets/head/head_frontal_vertex.target
+
 export function bodyDetailsPanel(mesh: Mesh) {
+    const panel: HTMLElement[] = []
+    tiles = new Array<Tile>(poseTargets.length)
+    // for (let jointIdx = 1; jointIdx < poseTargets.length; ++jointIdx) {
+    for (let tileIdx = 0; tileIdx < 6 * 9; ++tileIdx) {
+        panel.push(createTile(mesh, tileIdx))
+    }
     return (
         <>
             <div style={{ padding: "5px", fontWeight: "bold" }}>Body Details</div>
-            <div style={{lineHeight: "0"}}>
-                <img src="images/ui/body_01.png" />
-                <img src="images/ui/body_02.png" />
-                <img src="images/ui/face_01.png" />
-                <img src="images/ui/face_02.png" />
-                <img src="images/ui/face_03.png" />
-                <img src="images/ui/face_04.png" />
-                <br />
-                <img src="images/ui/body_03.png" />
-                <img src="images/ui/body_04.png" />
-                <img src="images/ui/face_05.png" />
-                <img src="images/ui/face_06.png" />
-                <img src="images/ui/face_07.png" />
-                <img src="images/ui/face_08.png" />
-                <br />
-                <img src="images/ui/body_05.png" />
-                <img src="images/ui/body_06.png" />
-                <img src="images/ui/face_09.png" />
-                <img src="images/ui/face_10.png" />
-                <img src="images/ui/face_11.png" />
-                <img src="images/ui/face_12.png" />
-                <br />
-                <img src="images/ui/body_07.png" />
-                <img src="images/ui/body_08.png" />
-                <img src="images/ui/face_13.png" />
-                <img src="images/ui/face_14.png" />
-                <img src="images/ui/face_15.png" />
-                <img src="images/ui/face_16.png" />
-                <br />
-                <img src="images/ui/body_09.png" />
-                <img src="images/ui/body_10.png" />
-                <img src="images/ui/face_17.png" />
-                <img src="images/ui/face_18.png" />
-                <img src="images/ui/face_19.png" />
-                <img src="images/ui/face_20.png" />
-                <br />
-                <img src="images/ui/body_11.png" />
-                <img src="images/ui/body_12.png" />
-                <img src="images/ui/face_21.png" />
-                <img src="images/ui/face_22.png" />
-                <img src="images/ui/face_23.png" />
-                <img src="images/ui/face_24.png" />
-                <br />
-                <img src="images/ui/body_13.png" />
-                <img src="images/ui/body_14.png" />
-                <img src="images/ui/hands_01.png" />
-                <img src="images/ui/hands_02.png" />
-                <img src="images/ui/hands_03.png" />
-                <img src="images/ui/hands_04.png" />
-                <br />
-                <img src="images/ui/body_15.png" />
-                <img src="images/ui/body_16.png" />
-                <img src="images/ui/hands_05.png" />
-                <img src="images/ui/hands_06.png" />
-                <img src="images/ui/hands_07.png" />
-                <img src="images/ui/hands_08.png" />
-                <br />
-                <img src="images/ui/body_17.png" />
-                <img src="images/ui/body_18.png" />
-                <img src="images/ui/hands_09.png" />
-                <img src="images/ui/hands_10.png" />
-                <img src="images/ui/hands_11.png" />
-                <img src="images/ui/hands_12.png" />
+            <div id="panel" style={{ lineHeight: "0" }}>
+                {...panel}
             </div>
-            <div set={new Reference(refs, "details")}></div>
+            <div id="details" set={new Reference(refs, "details")}></div>
         </>
     )
 }
+
+function createTile(mesh: Mesh, tileIdx: number): HTMLElement {
+    const target = poseTargets[tileIdx]
+    tiles[tileIdx] = { targetName: target }
+    const row = Math.floor(tileIdx / 6)
+    const col = tileIdx % 6
+    let src: string
+    let num
+    if (col < 2) {
+        src = "body"
+        num = 1 + col + row * 2
+    } else {
+        if (row < 6) {
+            src = "face"
+            num = 1 + col - 2 + row * 4
+        } else {
+            src = "hands"
+            num = 1 + col - 2 + (row - 6) * 4
+        }
+    }
+    src = `${src}_${num.toString().padStart(2, "0")}`
+    const tileImg = (<img src={`images/ui/${src}.png`} />) as HTMLImageElement
+    if (tileIdx < poseTargets.length) {
+        const name = poseTargets[tileIdx]
+        if (name !== undefined) {
+            tileImg.title = name
+            tileImg.onpointerenter = () => {
+                tileImg.src = `images/ui/${src}_over.png`
+            }
+            tileImg.onpointerleave = () => {
+                tileImg.src = `images/ui/${src}.png`
+            }
+        }
+    }
+    // tiles[jointIdx].img = tileImg
+    return tileImg
+}
+
+// prettier-ignore
+const poseTargets: (string | undefined)[] = [
+    "torso", "head", undefined, undefined, undefined, undefined, 
+    "shoulders", "neck", undefined, "forehead", undefined, undefined,
+]
+

@@ -6,110 +6,7 @@ interface RefTypes {
 }
 const refs: RefTypes = {} as any
 
-// the body pose panel consists of 6x14 tiles
-const poseTargets: (string | undefined)[] = [
-    undefined,
-    "260_right_collar",
-    "300_head",
-    "280_left_collar",
-    "070_left_ringfinger_3",
-    "067_left_middlefinger_3",
-    "064_left_forefinger_3",
-
-    "220_right_upper_arm",
-    "320_neck",
-    "240_left_upper_arm",
-    "071_left_ringfinger_2",
-    "068_left_middlefinger_2",
-    "065_left_forefinger_2",
-
-    undefined,
-    "360_torso",
-    undefined,
-    "073_left_littlefinger_3",
-    "069_left_middlefinger_1",
-    "066_left_forefinger_1",
-
-    "140_right_lower_arm",
-    "380_pivot",
-    "160_left_lower_arm",
-    "074_left_littlefinger_2",
-    "072_left_ringfinger_1",
-    "061_left_pollex_3",
-
-    "060_right_hand",
-    undefined,
-    "080_left_hand",
-    "075_left_littlefinger_1",
-    "063_left_pollex_1",
-    "062_left_pollex_2",
-
-    "180_right_upper_leg",
-    undefined,
-    "200_left_upper_leg",
-    "044_right_forefinger_3",
-    "047_right_middlefinger_3",
-    "050_right_ringfinger_3",
-
-    "100_right_lower_leg",
-    undefined,
-    "120_left_lower_leg",
-    "045_right_forefinger_2",
-    "048_right_middlefinger_2",
-    "051_right_ringfinger_2",
-
-    undefined,
-    undefined,
-    undefined,
-    "046_right_forefinger_1",
-    "049_right_middlefinger_1",
-    "053_right_littlefinger_3",
-
-    "020_right_foot",
-    undefined,
-    "040_left_foot",
-    "041_right_pollex_3",
-    "052_right_ringfinger_1",
-    "054_right_littlefinger_2",
-
-    undefined,
-    undefined,
-    undefined,
-    "042_right_pollex_2",
-    "043_right_pollex_1",
-    "055_right_littlefinger_1",
-
-    "002_right_footfinger_4_2",
-    "000_right_footfinger_5_2",
-    "001_right_footfinger_5_1",
-    "022_left_footfinger_5_1",
-    "021_left_footfinger_5_2",
-    "023_left_footfinger_4_2",
-
-    "004_right_footfinger_3_2",
-    "005_right_footfinger_3_1",
-    "003_right_footfinger_4_1",
-    "024_left_footfinger_4_1",
-    "026_left_footfinger_3_1",
-    "025_left_footfinger_3_2",
-
-    "006_right_footfinger_2_2",
-    "007_right_footfinger_2_1",
-    "009_right_footfinger_1_1",
-    "030_left_footfinger_1_1",
-    "028_left_footfinger_2_1",
-    "027_left_footfinger_2_2",
-
-    "008_right_footfinger_1_2",
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    "029_left_footfinger_1_2",
-]
-
 interface Tile {
-    // title: string
     targetName?: string
     img?: HTMLImageElement
 }
@@ -253,3 +150,105 @@ function createDetail(mesh: Mesh, name: string) {
 
     return detail
 }
+
+// the body pose panel consists of 6x14 tiles
+const poseTargets: (string | undefined)[] = [
+    undefined,
+    "260_right_collar",
+    "300_head",
+    "280_left_collar",
+    "070_left_ringfinger_3",
+    "067_left_middlefinger_3",
+    "064_left_forefinger_3",
+
+    "220_right_upper_arm",
+    "320_neck",
+    "240_left_upper_arm",
+    "071_left_ringfinger_2",
+    "068_left_middlefinger_2",
+    "065_left_forefinger_2",
+
+    undefined,
+    "360_torso",
+    undefined,
+    "073_left_littlefinger_3",
+    "069_left_middlefinger_1",
+    "066_left_forefinger_1",
+
+    "140_right_lower_arm",
+    "380_pivot",
+    "160_left_lower_arm",
+    "074_left_littlefinger_2",
+    "072_left_ringfinger_1",
+    "061_left_pollex_3",
+
+    "060_right_hand",
+    undefined,
+    "080_left_hand",
+    "075_left_littlefinger_1",
+    "063_left_pollex_1",
+    "062_left_pollex_2",
+
+    "180_right_upper_leg",
+    undefined,
+    "200_left_upper_leg",
+    "044_right_forefinger_3",
+    "047_right_middlefinger_3",
+    "050_right_ringfinger_3",
+
+    "100_right_lower_leg",
+    undefined,
+    "120_left_lower_leg",
+    "045_right_forefinger_2",
+    "048_right_middlefinger_2",
+    "051_right_ringfinger_2",
+
+    undefined,
+    undefined,
+    undefined,
+    "046_right_forefinger_1",
+    "049_right_middlefinger_1",
+    "053_right_littlefinger_3",
+
+    "020_right_foot",
+    undefined,
+    "040_left_foot",
+    "041_right_pollex_3",
+    "052_right_ringfinger_1",
+    "054_right_littlefinger_2",
+
+    undefined,
+    undefined,
+    undefined,
+    "042_right_pollex_2",
+    "043_right_pollex_1",
+    "055_right_littlefinger_1",
+
+    "002_right_footfinger_4_2",
+    "000_right_footfinger_5_2",
+    "001_right_footfinger_5_1",
+    "022_left_footfinger_5_1",
+    "021_left_footfinger_5_2",
+    "023_left_footfinger_4_2",
+
+    "004_right_footfinger_3_2",
+    "005_right_footfinger_3_1",
+    "003_right_footfinger_4_1",
+    "024_left_footfinger_4_1",
+    "026_left_footfinger_3_1",
+    "025_left_footfinger_3_2",
+
+    "006_right_footfinger_2_2",
+    "007_right_footfinger_2_1",
+    "009_right_footfinger_1_1",
+    "030_left_footfinger_1_1",
+    "028_left_footfinger_2_1",
+    "027_left_footfinger_2_2",
+
+    "008_right_footfinger_1_2",
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    "029_left_footfinger_1_2",
+]
