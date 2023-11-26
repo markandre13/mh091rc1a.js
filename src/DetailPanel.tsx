@@ -13,21 +13,12 @@ interface Tile {
 }
 let tiles: Tile[]
 
-let selectedJoint: number | undefined = undefined
-
-// TargetSelectionListener.cpp
-
-// Torso / torso_width_min_target
-// Head / head001 ... head_frontal_vertex
-
-// ./makehuman-0.9.1-rc1a/pixmaps/tgimg/head/head_frontal_vertex.png
-// ./makehuman-0.9.1-rc1a/data/targets/head/head_frontal_vertex.target
+let selectedTile: number | undefined = undefined
 
 export function bodyDetailsPanel(mesh: Mesh) {
     const panel: HTMLElement[] = []
-    tiles = new Array<Tile>(poseTargets.length)
-    // for (let jointIdx = 1; jointIdx < poseTargets.length; ++jointIdx) {
-    for (let tileIdx = 0; tileIdx < 6 * 9; ++tileIdx) {
+    tiles = new Array<Tile>(detailTargets.length)
+    for (let tileIdx = 0; tileIdx < detailTargets.length; ++tileIdx) {
         panel.push(createTile(mesh, tileIdx))
     }
     return (
@@ -42,7 +33,7 @@ export function bodyDetailsPanel(mesh: Mesh) {
 }
 
 function createTile(mesh: Mesh, tileIdx: number): HTMLElement {
-    const target = poseTargets[tileIdx]
+    const target = detailTargets[tileIdx]
     tiles[tileIdx] = { targetName: target }
     const row = Math.floor(tileIdx / 6)
     const col = tileIdx % 6
@@ -62,8 +53,8 @@ function createTile(mesh: Mesh, tileIdx: number): HTMLElement {
     }
     src = `${src}_${num.toString().padStart(2, "0")}`
     const tileImg = (<img src={`images/ui/${src}.png`} />) as HTMLImageElement
-    if (tileIdx < poseTargets.length) {
-        const name = poseTargets[tileIdx]
+    if (tileIdx < detailTargets.length) {
+        const name = detailTargets[tileIdx]
         if (name !== undefined) {
             const title = name.at(0)!.toUpperCase() + name.substring(1)
             tileImg.title = title
@@ -91,17 +82,23 @@ function createTile(mesh: Mesh, tileIdx: number): HTMLElement {
                 // if (selectedJoint !== undefined && selectedJoint !== jointIdx) {
                 //     tiles[selectedJoint].img!.src = `images/ui/rotations_${selectedJoint.toString().padStart(2, "0")}.png`
                 // }
-                // selectedJoint = jointIdx
+                selectedTile = tileIdx
             }
         }
     }
-    // tiles[jointIdx].img = tileImg
+    tiles[tileIdx].img = tileImg
     return tileImg
 }
 
 // prettier-ignore
-const poseTargets: (string | undefined)[] = [
+const detailTargets: (string | undefined)[] = [
     "torso", "head", undefined, undefined, undefined, undefined, 
     "shoulders", "neck", undefined, "forehead", undefined, undefined,
+    "upper_arms", undefined, undefined, "eyes", undefined, undefined,
+    "lower_arms", "abdomen", "nose", "cheek", "ears", undefined,
+    "hands", "pelvis", "mouth", undefined, undefined, undefined,
+    "upper_legs", undefined, "chin_jaw", undefined, undefined, undefined,
+    undefined, undefined, "forefinger", "middlefinger", "ringfinger", undefined,
+    "lower_legs", undefined, "pollex", undefined, "littlefinger", undefined,
+    "feet", undefined, undefined, undefined, undefined, undefined
 ]
-
