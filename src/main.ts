@@ -43,6 +43,7 @@ export function main() {
     // mesh.setPose("020_right_foot/ROT1", 60)
     // mesh.setPose("040_left_foot/ROT1", 60)
     // mesh.setPose("180_right_upper_leg/ROT_BASE1", 70)
+    mesh.doMorph("pelvis/genital_male_foreskin.target", 1)
     // mesh.update()
 
     // console.log("render")
@@ -158,7 +159,7 @@ function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     paint()
 
     mesh.changed.add(() => {
-        mesh.update()
+        mesh.updatePose()
         const vertex: number[] = []
         for (const v of mesh.vertexvector_morph) {
             vertex.push(v.co[0], v.co[1], v.co[2])

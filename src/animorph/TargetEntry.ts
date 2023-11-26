@@ -1,9 +1,9 @@
 import { Target } from "./Target"
 
 export class TargetEntry {
-    mFilename: string
-    mTarget?: Target = undefined;
-    mTargetLoadTry: boolean = false;
+    private mFilename: string
+    private mTarget?: Target = undefined;
+    private mTargetLoadTry: boolean = false;
 
     constructor(filename: string, preload = false) {
         this.mFilename = filename
@@ -21,5 +21,12 @@ export class TargetEntry {
             }
         }
         return this.mTarget !== undefined
+    }
+
+    getTarget(): Target | undefined {
+        if (!this.mTargetLoadTry) {
+            this.loadFromFile()
+        }
+        return this.mTarget
     }
 }

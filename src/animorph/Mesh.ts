@@ -10,6 +10,7 @@ import { PoseRotation, RotateAxis } from "./PoseRotation"
 import { mat4, vec3 } from "gl-matrix"
 import { Signal } from "toad.js"
 import { Vertex } from "./Vertex"
+import { Target } from "./Target"
 
 class TargetMap extends Map<string, TargetEntry> {}
 class PoseMap extends Map<string, PoseEntry> {}
@@ -32,6 +33,7 @@ export class Mesh {
 
     // user settings for posing
     poses = new BodySettings()
+    bodyset = new BodySettings()
 
     loadMeshFactory(meshFilename: string, facesFilename: string) {
         this.vertexvector_morph.load(meshFilename)
@@ -128,7 +130,7 @@ export class Mesh {
             morph_value = poseTarget.getMaxAngle()
         }
         if (!this.posemap.has(target_name)) {
-            throw new Error(`a target with name "${target_name}" wasn't found in posemap`)
+            throw new Error(`a pose target with name "${target_name}" wasn't found in posemap`)
         }
 
         if (morph_value === 0) {
@@ -144,7 +146,6 @@ export class Mesh {
         }
 
         if (this.poseChanged === false) {
-            console.log(`trigger changed signal`)
             this.poseChanged = true
             this.changed.trigger()
         }
@@ -155,7 +156,7 @@ export class Mesh {
         return p === undefined ? 0 : p
     }
 
-    update() {
+    updatePose() {
         if (this.poseChanged === false) {
             return
         }
@@ -192,6 +193,9 @@ export class Mesh {
         // applySmooth(2);
     }
 
+    getTargetForName(target_name: string): Target | undefined {
+        return this.targetmap.get(target_name)?.getTarget()
+    }
     getPoseTargetForName(target_name: string): PoseTarget | undefined {
         return this.posemap.get(target_name)?.getTarget()
     }
@@ -293,7 +297,57 @@ export class Mesh {
             vec3.add(co, co, pr.getCenter())
         }
     }
+    doMorph(target_name: string, morph_value: number) {
+        if (morph_value < 0) {
+            morph_value = 0
+        }
+        if (morph_value > 1) {
+            morph_value = 1
+        }
 
+        if (!this.targetmap.has(target_name)) {
+            throw new Error(`a morph target with name "${target_name}" wasn't found in targetmap`)
+        }
+
+        let real_morph_value
+        let bs_morph_value = this.getMorph(target_name)
+        if (morph_value === 0) {
+            real_morph_value = -bs_morph_value
+        } else {
+            real_morph_value = morph_value - bs_morph_value
+        }
+
+        const target = this.getTargetForName(target_name)!
+
+        for (const td of target) {
+            const co = this.vertexvector_morph[td.vertex_number].co
+            const mv = vec3.scale(vec3.create(), td.morph_vector, real_morph_value)
+            vec3.add(co, co, mv)
+        }
+
+        if (morph_value === 0) {
+            if (!this.bodyset.has(target_name)) {
+                return morph_value
+            }
+            this.bodyset.delete(target_name)
+        } else {
+            if (this.bodyset.get(target_name) === morph_value) {
+                return morph_value
+            }
+            this.bodyset.set(target_name, morph_value)
+        }
+
+        // if (this.poseChanged === false) {
+        //     console.log(`trigger changed signal`)
+        //     this.poseChanged = true
+        //     this.changed.trigger()
+        // }
+        return morph_value
+    }
+    getMorph(target_name: string): number {
+        const p = this.bodyset.get(target_name)
+        return p === undefined ? 0 : p
+    }
     getVertexes(): VertexVector {
         return this.vertexvector_morph
     }
