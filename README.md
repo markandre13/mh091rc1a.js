@@ -25,7 +25,10 @@ The later 1.x versions provide much better meshes, morphs, a skeleton and altern
 
 The goal learn about this version of MakeHuman and try to bring lost functionality to my MakeHuman 1.2 port [makehuman.js](https://github.com/markandre13/makehuman.js).
 
-An overview of this implementation is given in
+Some changes to the original
+
+* all controls are on the left
+* selected controls stay highlighted
 
 <!--
 [ ] morph

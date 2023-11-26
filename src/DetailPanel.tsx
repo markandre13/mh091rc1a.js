@@ -65,12 +65,33 @@ function createTile(mesh: Mesh, tileIdx: number): HTMLElement {
     if (tileIdx < poseTargets.length) {
         const name = poseTargets[tileIdx]
         if (name !== undefined) {
-            tileImg.title = name
+            const title = name.at(0)!.toUpperCase() + name.substring(1)
+            tileImg.title = title
             tileImg.onpointerenter = () => {
                 tileImg.src = `images/ui/${src}_over.png`
             }
             tileImg.onpointerleave = () => {
                 tileImg.src = `images/ui/${src}.png`
+            }
+            tileImg.onpointerdown = () => {
+                const details = (
+                    <>
+                        <div style={{ padding: "5px", fontWeight: "bold" }}>{title}</div>
+                    </>
+                )
+                mesh.targetmap.forEach((targetEntry, name) => {
+
+                    if (name.startsWith(`${tiles[tileIdx].targetName}/`)) {
+                        const detailImg = <img width="64" height="64" title={name} src={`images/target/${name.substring(0, name.length-7)}.png`} /> as HTMLImageElement
+                        details.push(detailImg)
+                        // details.push(createDetail(mesh, name))
+                    }
+                })
+                refs.details.replaceChildren(...details)
+                // if (selectedJoint !== undefined && selectedJoint !== jointIdx) {
+                //     tiles[selectedJoint].img!.src = `images/ui/rotations_${selectedJoint.toString().padStart(2, "0")}.png`
+                // }
+                // selectedJoint = jointIdx
             }
         }
     }

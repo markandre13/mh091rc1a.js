@@ -62,9 +62,6 @@ function createTile(mesh: Mesh, jointIdx: number): HTMLElement {
             )
             mesh.posemap.forEach((poseEntry, name) => {
                 if (name.startsWith(`${tiles[jointIdx].targetName}/`)) {
-                    // value changes on: drag left & right / wheel
-                    // white: default, red: changed
-                    // const detailImg = <img width="64" height="64" title={key} src={`images/rot/${key}.png`} /> as HTMLImageElement
                     details.push(createDetail(mesh, name))
                 }
             })
