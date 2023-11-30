@@ -7,9 +7,10 @@ function createSelectorView(listener: SelectorListener, selector: Selector, name
         <div style={{ position: "relative" }}>
             <div
                 style={{
+                    pointerEvents: "none",
                     position: "absolute",
-                    left: `${selector.cursorPos.x-3}px`,
-                    top: `${selector.cursorPos.y-3}px`,
+                    left: `${selector.cursorPos.x - 3}px`,
+                    top: `${104 - selector.cursorPos.y - 3}px`,
                     width: "6px",
                     height: "6px",
                     border: "0",
@@ -21,9 +22,9 @@ function createSelectorView(listener: SelectorListener, selector: Selector, name
     ) as HTMLDivElement
     const caret = view.children[0] as HTMLDivElement
     const set = (ev: PointerEvent) => {
-        selector.setCursorPos(ev.offsetX, ev.offsetY)
-        caret.style.left = `${selector.cursorPos.x-3}px`
-        caret.style.top = `${selector.cursorPos.y-3}px`
+        selector.setCursorPos(ev.offsetX, 104 - ev.offsetY)
+        caret.style.left = `${selector.cursorPos.x - 3}px`
+        caret.style.top = `${104 - selector.cursorPos.y - 3}px`
         listener.calcWidgetTargets()
     }
     view.onpointerdown = (ev: PointerEvent) => {

@@ -27,11 +27,13 @@ export class SelectorListener {
             "cone_little", "cone_big",
             "sphere_little", "sphere_big"
         ])
+        this.breast.setCursorPos(96, 54)
         // prettier-ignore
         this.shape = new Selector(2, 2, [
             "brevilinear_vshape", "brevilinear_peershape",
             "longilinear_vshape", "longilinear_peershape"
         ])
+        // this.calcWidgetTargets() // FIXME: when called here, UI stops working
     }
 
     doMorph(target_name: string, morph_value: number) {
@@ -71,8 +73,8 @@ export class SelectorListener {
                             const tmpTargetValue = di_it * ms_it * br_it
                             this.doMorph(tmpTargetName, tmpTargetValue)
                         }
+                        ++k
                     }
-                    ++k
                 }
                 ++i
             }

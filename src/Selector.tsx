@@ -3,7 +3,7 @@ import { Point } from "Point"
 export class Selector {
     height = 104;
     width = 192;
-    cursorPos: Point = { x: 96, y: 52 };
+    cursorPos: Point = { x: 96/2, y: 54 };
     rows: number
     cols: number
     maxValue: number
@@ -44,7 +44,7 @@ export class Selector {
         }
         this.dists = []
         
-        let x = this.cursorPos.x, y = this.height - this.cursorPos.y
+        let x = this.cursorPos.x, y = this.cursorPos.y
 
         for (const tmp of this.points) {
             const dist = Math.sqrt(
