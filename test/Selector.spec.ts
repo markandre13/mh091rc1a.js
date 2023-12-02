@@ -48,7 +48,7 @@ describe("SelectorListener", () => {
     })
 
     describe("calcWidgetTargets()", () => {
-        it("001", () => {
+       it("001", () => {
             const out: Expect[] = []
             const sl = new SelectorListener({
                 doMorph: (name: string, value: number) => {
@@ -56,6 +56,10 @@ describe("SelectorListener", () => {
                     return value
                 },
             } as any)
+            sl.age.setCursorPos(0,0)
+            sl.muscleSize.setCursorPos(0,0)
+            sl.breast.setCursorPos(0,0)
+            sl.shape.setCursorPos(0,0)
             sl.calcWidgetTargets()
             expect(out).to.deep.almost.equal(expect00)
         })
