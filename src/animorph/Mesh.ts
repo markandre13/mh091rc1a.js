@@ -9,7 +9,6 @@ import { PoseTranslation } from "./PoseTranslation"
 import { PoseRotation, RotateAxis } from "./PoseRotation"
 import { mat4, vec3 } from "gl-matrix"
 import { Signal } from "toad.js"
-import { Vertex } from "./Vertex"
 import { Target } from "./Target"
 
 class TargetMap extends Map<string, TargetEntry> {}
@@ -23,31 +22,74 @@ enum Mode {
 // animorph-0.3/src/Mesh.cpp
 export class Mesh {
     changed = new Signal()
-
     private dirty = false
     private poseChanged = false
+    private mode = Mode.MORPH
+    
+    private vertexBase = new VertexVector() // vertices as loaded from file
+    private vertexMorphed!: VertexVector // morphed vertices
+    private vertexPosed!: VertexVector // morphed and posed vertices
 
+    // user settings for posing
+    private poses = new BodySettings()
+    private bodyset = new BodySettings()
+
+    // faces
+    facevector = new FaceVector()
+    facegroup = new FaceGroup()
+    targetmap = new TargetMap()
+    posemap = new PoseMap()
+
+    morphMode() {
+        this.mode = Mode.MORPH
+        this.markDirty()
+    }
+    poseMode() {
+        this.initPoses()
+        this.mode = Mode.POSE
+        this.poseChanged = true
+        this.markDirty()
+    }
+    getVertexes(): VertexVector {
+        switch(this.mode) {
+            case Mode.MORPH:
+                return this.vertexMorphed
+            case Mode.POSE:
+                return this.vertexPosed
+        }
+    }
+    clear() {
+        switch(this.mode) {
+            case Mode.MORPH:
+                this.clearMorph()
+                break
+            case Mode.POSE:
+                this.clearPose()
+                break
+        }
+    }
+    clearMorph() {
+        if (this.bodyset.size === 0) {
+            return
+        }
+        this.vertexMorphed.setFrom(this.vertexBase)
+        this.bodyset.clear()
+        this.markDirty()
+    }
+    clearPose() {
+        if (this.poses.size === 0) {
+            return
+        }
+        this.poses.clear()
+        this.poseChanged = true
+        this.markDirty()
+    }
     private markDirty() {
         if (this.dirty === false) {
             this.dirty = true
             this.changed.trigger()
         }
     }
-
-    // faces
-    facevector = new FaceVector()
-
-    private vertexBase = new VertexVector()
-    private vertexMorphed!: VertexVector
-    private vertexPosed!: VertexVector
-
-    facegroup = new FaceGroup()
-    targetmap = new TargetMap()
-    posemap = new PoseMap()
-
-    // user settings for posing
-    poses = new BodySettings()
-    bodyset = new BodySettings()
 
     loadMeshFactory(meshFilename: string, facesFilename: string) {
         this.vertexBase.load(meshFilename)
@@ -97,17 +139,6 @@ export class Mesh {
         }
         console.log(`loaded ${counter} pose entries from ${targetRootPath}/`)
     }
-    private mode = Mode.MORPH
-    morphMode() {
-        this.mode = Mode.MORPH
-        this.markDirty()
-    }
-    poseMode() {
-        this.initPoses()
-        this.mode = Mode.POSE
-        this.poseChanged = true
-        this.markDirty()
-    }
     // loadCharactersFactory(charactersRootPath: string, recursiveLevel = 1) {
     //     throw Error("not implemented yet")
     // }
@@ -134,32 +165,7 @@ export class Mesh {
         //     skinVertex.setOriginalDist(oriDist.getMagnitude());
         // }
     }
-    clear() {
-        switch(this.mode) {
-            case Mode.MORPH:
-                this.clearMorph()
-                break
-            case Mode.POSE:
-                this.clearPose()
-                break
-        }
-    }
-    clearMorph() {
-        if (this.bodyset.size === 0) {
-            return
-        }
-        this.vertexMorphed.setFrom(this.vertexBase)
-        this.bodyset.clear()
-        this.markDirty()
-    }
-    clearPose() {
-        if (this.poses.size === 0) {
-            return
-        }
-        this.poses.clear()
-        this.poseChanged = true
-        this.markDirty()
-    }
+
     setPose(target_name: string, morph_value: number) {
         const poseTarget = this.getPoseTargetForName(target_name)
         if (poseTarget === undefined) {
@@ -372,14 +378,6 @@ export class Mesh {
     getMorph(target_name: string): number {
         const p = this.bodyset.get(target_name)
         return p === undefined ? 0 : p
-    }
-    getVertexes(): VertexVector {
-        switch(this.mode) {
-            case Mode.MORPH:
-                return this.vertexMorphed
-            case Mode.POSE:
-                return this.vertexPosed
-        }
     }
 }
 

@@ -31,7 +31,7 @@ describe("rotate_foot", function() {
         // mesh.loadCharactersFactory("bs_data")
 
         console.log("init poses")
-        mesh.initPoses()
+        mesh.poseMode()
 
         // compare with C++ version
         expect(mesh.getVertexes()[4643].co).to.deep.almost.equal(vec3.fromValues(1.55093, -4.87655, -0.823161))
