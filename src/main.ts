@@ -11,6 +11,7 @@ import {
     prepareViewport,
 } from "gl/util"
 import screen from "./screen"
+import { SelectorListener } from "SelectorListener"
 
 export function main() {
     console.log(`mh091rc1a (Makehuman 0.9.1-rc1a clone)`)
@@ -34,6 +35,9 @@ export function main() {
     mesh.loadPoseTargetsFactory("rotations")
     // mesh.loadCharactersFactory("bs_data")
 
+    const mgr = new SelectorListener(mesh)
+    mgr.calcWidgetTargets()
+
     // console.log("init poses")
     mesh.initPoses()
 
@@ -44,13 +48,14 @@ export function main() {
     // mesh.setPose("040_left_foot/ROT1", 60)
     // mesh.setPose("180_right_upper_leg/ROT_BASE1", 70)
     // mesh.doMorph("pelvis/genital_male_foreskin.target", 1)
-    // mesh.update()
+    // mesh.setPose("180_right_upper_leg/ROT_BASE2", 145);
+    mesh.update()
 
     // console.log("render")
     document.body.style.overflow = "hidden"
     document.body.style.margin = "0"
     document.body.style.padding = "0"
-    document.body.replaceChildren(...screen(mesh))
+    document.body.replaceChildren(...screen(mesh, mgr))
 
     const canvas = document.body.querySelector("canvas") as HTMLCanvasElement
     renderMesh(canvas, mesh)

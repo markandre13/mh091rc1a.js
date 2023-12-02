@@ -40,8 +40,7 @@ function createSelectorView(listener: SelectorListener, selector: Selector, name
     return view
 }
 
-export function characterPanel(mesh: Mesh) {
-    const mgr = new SelectorListener(mesh)
+export function characterPanel(mgr: SelectorListener) {
     return (
         <>
             <div style={{ padding: "5px", fontWeight: "bold" }}>Character</div>

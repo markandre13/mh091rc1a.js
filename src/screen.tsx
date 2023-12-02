@@ -3,6 +3,7 @@ import { Mesh } from "animorph/Mesh"
 import { bodyDetailsPanel } from "DetailPanel"
 import { Fragment, Reference } from "toad.jsx/lib/jsx-runtime"
 import { characterPanel } from "CharacterPanel"
+import { SelectorListener } from "SelectorListener"
 
 interface RefTypes {
     panel: HTMLDivElement
@@ -22,7 +23,7 @@ interface ToolDef {
     file: string
     desc: string
     img?: HTMLImageElement
-    render?: (mesh: Mesh) => Fragment
+    render?: (mesh: Mesh, mgr: SelectorListener) => Fragment
     dom?: Fragment // FIXME: toad.jsx can not initialize the same JSX twice, hence we must cache
 }
 
@@ -33,7 +34,7 @@ const toolbarDefinition: ToolDef[] = [
         id: TAB.CHARACTER,
         file: "charac_sett",
         desc: "Character setting (somatypes, shapes, age, etc...)",
-        render: (mesh: Mesh) => characterPanel(mesh),
+        render: (mesh: Mesh, mgr: SelectorListener) => characterPanel(mgr),
     },
     {
         id: TAB.DETAILS,
@@ -45,14 +46,14 @@ const toolbarDefinition: ToolDef[] = [
 ]
 
 let activeTab: ToolDef | undefined
-function setTab(mesh: Mesh, tab: ToolDef) {
+function setTab(mesh: Mesh, mgr: SelectorListener, tab: ToolDef) {
     if (activeTab) {
         activeTab.img!.src = `images/ui/toolbar_${activeTab.file}.png`
     }
     activeTab = tab
     activeTab.img!.src = `images/ui/toolbar_${activeTab.file}_over.png`
     if (tab.dom === undefined && tab.render !== undefined) {
-        tab.dom = tab.render(mesh)
+        tab.dom = tab.render(mesh, mgr)
     }
     if (tab.dom !== undefined) {
         refs.panel.replaceChildren(...tab.dom)
@@ -61,7 +62,7 @@ function setTab(mesh: Mesh, tab: ToolDef) {
     }
 }
 
-function toolbarPanel(mesh: Mesh): HTMLElement[] {
+function toolbarPanel(mesh: Mesh, mgr: SelectorListener): HTMLElement[] {
     return toolbarDefinition.map((it) => {
         const img = (<img src={`images/ui/toolbar_${it.file}.png`} title={it.desc} />) as HTMLImageElement
         it.img = img
@@ -74,13 +75,13 @@ function toolbarPanel(mesh: Mesh): HTMLElement[] {
             }
         }
         img.onpointerdown = () => {
-            setTab(mesh, it)
+            setTab(mesh, mgr, it)
         }
         return img
     })
 }
 
-export default (mesh: Mesh) => {
+export default (mesh: Mesh, mgr: SelectorListener) => {
     const page = (
         <>
             <div
@@ -94,7 +95,7 @@ export default (mesh: Mesh) => {
                 }}
             >
                 <div id="toolbar" style={{ lineHeight: "0" }}>
-                    {...toolbarPanel(mesh)}
+                    {...toolbarPanel(mesh, mgr)}
                     <img src="images/ui/toolbar_reset.png" title="Reset mesh" onpointerdown={() => mesh.clear()} />
                 </div>
                 <div set={new Reference(refs, "panel")}></div>
@@ -118,7 +119,7 @@ export default (mesh: Mesh) => {
         </>
     ) as Fragment
 
-    setTab(mesh, toolbarDefinition[2])
+    setTab(mesh, mgr, toolbarDefinition[2])
 
     return page
 }
