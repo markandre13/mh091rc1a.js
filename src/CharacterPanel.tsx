@@ -40,7 +40,8 @@ function createSelectorView(listener: SelectorListener, selector: Selector, name
     return view
 }
 
-export function characterPanel(mgr: SelectorListener) {
+export function characterPanel(mesh: Mesh, mgr: SelectorListener) {
+    mesh.morphMode()
     return (
         <>
             <div style={{ padding: "5px", fontWeight: "bold" }}>Character</div>

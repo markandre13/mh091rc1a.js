@@ -15,6 +15,11 @@ import { Target } from "./Target"
 class TargetMap extends Map<string, TargetEntry> {}
 class PoseMap extends Map<string, PoseEntry> {}
 
+enum Mode {
+    MORPH,
+    POSE
+}
+
 // animorph-0.3/src/Mesh.cpp
 export class Mesh {
     changed = new Signal()
@@ -32,11 +37,10 @@ export class Mesh {
     // faces
     facevector = new FaceVector()
 
-    // vertices TODO: replace with Float32Array
-    vertexvector_morph = new VertexVector() // morphed mesh
-    vertexvector_morph_copy?: VertexVector  // copy of vertexvector_morph to reset vertexvector_morph and vertexvector_morph_only, used when animating/posing)
-    // vertexvector_morph_only: VertexVector
-    // vertexvector_orginal: vec3[]; // orginal mesh
+    private vertexBase = new VertexVector()
+    private vertexMorphed!: VertexVector
+    private vertexPosed!: VertexVector
+
     facegroup = new FaceGroup()
     targetmap = new TargetMap()
     posemap = new PoseMap()
@@ -46,7 +50,8 @@ export class Mesh {
     bodyset = new BodySettings()
 
     loadMeshFactory(meshFilename: string, facesFilename: string) {
-        this.vertexvector_morph.load(meshFilename)
+        this.vertexBase.load(meshFilename)
+        this.vertexMorphed = this.vertexBase.clone()
         this.facevector.loadGeometry(facesFilename)
     }
     loadGroupsFactory(groups_filename: string) {
@@ -92,17 +97,28 @@ export class Mesh {
         }
         console.log(`loaded ${counter} pose entries from ${targetRootPath}/`)
     }
+    private mode = Mode.MORPH
+    morphMode() {
+        this.mode = Mode.MORPH
+        this.markDirty()
+    }
+    poseMode() {
+        this.initPoses()
+        this.mode = Mode.POSE
+        this.poseChanged = true
+        this.markDirty()
+    }
     // loadCharactersFactory(charactersRootPath: string, recursiveLevel = 1) {
     //     throw Error("not implemented yet")
     // }
-    initPoses() {
+    private initPoses() {
         // console.log(`Mesh.initPoses() not implemented`)
         // return
-        const vertexvector_morph_copy = this.vertexvector_morph
+        this.vertexPosed = this.vertexMorphed.clone()
         this.posemap.forEach((poseEntry) => {
             const tmp = poseEntry.getTarget()!
-            tmp.calcRotationsCenteroids(vertexvector_morph_copy)
-            tmp.calcTranslationsFormFactors(vertexvector_morph_copy)
+            tmp.calcRotationsCenteroids(this.vertexMorphed)
+            tmp.calcTranslationsFormFactors(this.vertexMorphed)
             tmp.calcNormalizations()
         })
 
@@ -119,14 +135,21 @@ export class Mesh {
         // }
     }
     clear() {
-        this.clearMorph()
-        this.clearPose()
+        switch(this.mode) {
+            case Mode.MORPH:
+                this.clearMorph()
+                break
+            case Mode.POSE:
+                this.clearPose()
+                break
+        }
     }
     clearMorph() {
         if (this.bodyset.size === 0) {
             return
         }
-        this.bodyset.forEach((value, name) => this.doMorph(name, 0))
+        this.vertexMorphed.setFrom(this.vertexBase)
+        this.bodyset.clear()
         this.markDirty()
     }
     clearPose() {
@@ -176,7 +199,6 @@ export class Mesh {
     }
 
     update() {
-        // this.updateMorph()
         this.updatePose()
         this.dirty = false
     }
@@ -187,26 +209,7 @@ export class Mesh {
         }
         this.poseChanged = false
 
-        if (this.vertexvector_morph_copy === undefined) {
-            this.vertexvector_morph_copy = new VertexVector(this.vertexvector_morph.length)
-            for (let i = 0; i < this.vertexvector_morph.length; ++i) {
-                const v = this.vertexvector_morph[i]
-                this.vertexvector_morph_copy[i] = new Vertex(v.co[0], v.co[1], v.co[2], v.no[0], v.no[1], v.no[2])
-            }
-        } else {
-            for (let i = 0; i < this.vertexvector_morph.length; ++i) {
-                const from = this.vertexvector_morph_copy[i]
-                const to = this.vertexvector_morph[i]
-                ;[to.co[0], to.co[1], to.co[2], to.no[0], to.no[1], to.no[2]] = [
-                    from.co[0],
-                    from.co[1],
-                    from.co[2],
-                    from.no[0],
-                    from.no[1],
-                    from.no[2],
-                ]
-            }
-        }
+        this.vertexPosed!.setFrom(this.vertexMorphed!)
 
         // Map is not sorted but poses must be applied sorted by target_name
         ;[...this.poses.keys()].sort().forEach((target_name) => {
@@ -264,9 +267,10 @@ export class Mesh {
             if (!modVertex.has(td.vertex_number)) {
                 continue
             }
+            const co = this.vertexPosed[td.vertex_number].co
             vec3.add(
-                this.vertexvector_morph[td.vertex_number].co,
-                this.vertexvector_morph[td.vertex_number].co,
+                co,
+                co,
                 vec3.fromValues(
                     formFactor[0] * td.morph_vector[0] * real_value,
                     formFactor[1] * td.morph_vector[1] * real_value,
@@ -313,7 +317,7 @@ export class Mesh {
                     mat4.rotateZ(rotMatrix, rotMatrix, theta)
                     break
             }
-            const co = this.vertexvector_morph[td.vertex_number].co
+            const co = this.vertexPosed[td.vertex_number].co
             if (co === undefined) {
                 throw Error()
             }
@@ -345,7 +349,7 @@ export class Mesh {
         const target = this.getTargetForName(target_name)!
 
         for (const td of target) {
-            const co = this.vertexvector_morph[td.vertex_number].co
+            const co = this.vertexMorphed[td.vertex_number].co
             const mv = vec3.scale(vec3.create(), td.morph_vector, real_morph_value)
             vec3.add(co, co, mv)
         }
@@ -370,7 +374,12 @@ export class Mesh {
         return p === undefined ? 0 : p
     }
     getVertexes(): VertexVector {
-        return this.vertexvector_morph
+        switch(this.mode) {
+            case Mode.MORPH:
+                return this.vertexMorphed
+            case Mode.POSE:
+                return this.vertexPosed
+        }
     }
 }
 

@@ -33,7 +33,7 @@ const toolbarDefinition: ToolDef[] = [
         id: TAB.CHARACTER,
         file: "charac_sett",
         desc: "Character setting (somatypes, shapes, age, etc...)",
-        render: (mesh: Mesh, mgr: SelectorListener) => characterPanel(mgr),
+        render: (mesh: Mesh, mgr: SelectorListener) => characterPanel(mesh, mgr),
     },
     {
         id: TAB.DETAILS,

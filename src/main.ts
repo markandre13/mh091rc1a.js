@@ -49,13 +49,15 @@ export function main() {
     // mesh.setPose("180_right_upper_leg/ROT_BASE1", 70)
     // mesh.doMorph("pelvis/genital_male_foreskin.target", 1)
     // mesh.setPose("180_right_upper_leg/ROT_BASE2", 145);
-    mesh.update()
+    // mesh.update()
 
     // console.log("render")
     document.body.style.overflow = "hidden"
     document.body.style.margin = "0"
     document.body.style.padding = "0"
     document.body.replaceChildren(...screen(mesh, mgr))
+
+    mesh.update()
 
     const canvas = document.body.querySelector("canvas") as HTMLCanvasElement
     renderMesh(canvas, mesh)
@@ -70,7 +72,7 @@ interface FG {
 function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     // STEP 1: convert mesh.vertexvector_morph to Float32Array
     const vertex: number[] = []
-    for (const v of mesh.vertexvector_morph) {
+    for (const v of mesh.getVertexes()) {
         vertex.push(v.co[0], v.co[1], v.co[2])
     }
 
@@ -167,7 +169,7 @@ function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
         requestAnimationFrame(() => {
             mesh.update()
             const vertex: number[] = []
-            for (const v of mesh.vertexvector_morph) {
+            for (const v of mesh.getVertexes()) {
                 vertex.push(v.co[0], v.co[1], v.co[2])
             }
             renderMesh.update(new Float32Array(vertex))

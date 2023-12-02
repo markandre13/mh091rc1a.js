@@ -18,6 +18,7 @@ let tiles: Tile[]
 let selectedTile: number | undefined = undefined
 
 export function bodyDetailsPanel(mesh: Mesh) {
+    mesh.morphMode()
     const panel: HTMLElement[] = []
     tiles = new Array<Tile>(detailTargets.length)
     for (let tileIdx = 0; tileIdx < detailTargets.length; ++tileIdx) {
