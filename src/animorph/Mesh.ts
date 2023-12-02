@@ -16,7 +16,7 @@ class PoseMap extends Map<string, PoseEntry> {}
 
 enum Mode {
     MORPH,
-    POSE
+    POSE,
 }
 
 // animorph-0.3/src/Mesh.cpp
@@ -25,7 +25,7 @@ export class Mesh {
     private dirty = false
     private poseChanged = false
     private mode = Mode.MORPH
-    
+
     private vertexBase = new VertexVector() // vertices as loaded from file
     private vertexMorphed!: VertexVector // morphed vertices
     private vertexPosed!: VertexVector // morphed and posed vertices
@@ -51,7 +51,7 @@ export class Mesh {
         this.markDirty()
     }
     getVertexes(): VertexVector {
-        switch(this.mode) {
+        switch (this.mode) {
             case Mode.MORPH:
                 return this.vertexMorphed
             case Mode.POSE:
@@ -59,7 +59,7 @@ export class Mesh {
         }
     }
     clear() {
-        switch(this.mode) {
+        switch (this.mode) {
             case Mode.MORPH:
                 this.clearMorph()
                 break
@@ -90,11 +90,15 @@ export class Mesh {
             this.changed.trigger()
         }
     }
+    update() {
+        this.updatePose()
+        this.dirty = false
+    }
 
     loadMeshFactory(meshFilename: string, facesFilename: string) {
         this.vertexBase.load(meshFilename)
-        this.vertexMorphed = this.vertexBase.clone()
         this.facevector.loadGeometry(facesFilename)
+        this.vertexMorphed = this.vertexBase.clone()
     }
     loadGroupsFactory(groups_filename: string) {
         return this.facegroup.load(groups_filename)
@@ -142,6 +146,10 @@ export class Mesh {
     // loadCharactersFactory(charactersRootPath: string, recursiveLevel = 1) {
     //     throw Error("not implemented yet")
     // }
+
+    //
+    // POSE
+    //
     private initPoses() {
         // console.log(`Mesh.initPoses() not implemented`)
         // return
@@ -203,12 +211,6 @@ export class Mesh {
         const p = this.poses.get(target_name)
         return p === undefined ? 0 : p
     }
-
-    update() {
-        this.updatePose()
-        this.dirty = false
-    }
-
     updatePose() {
         if (this.poseChanged === false) {
             return
@@ -332,6 +334,11 @@ export class Mesh {
             vec3.add(co, co, pr.getCenter())
         }
     }
+
+    //
+    // MORPH
+    //
+
     doMorph(target_name: string, morph_value: number) {
         if (morph_value < 0) {
             morph_value = 0

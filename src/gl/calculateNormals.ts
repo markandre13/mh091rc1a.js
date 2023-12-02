@@ -27,6 +27,7 @@ export function calculateNormalsQuads(
         vec3.subtract(u, p2, p1)
         vec3.subtract(v, p3, p1)
         vec3.cross(n, u, v)
+        vec3.normalize(n, n)
 
         addNormal(i1, n)
         addNormal(i2, n)
@@ -70,6 +71,7 @@ export function calculateNormalsTriangles(
         vec3.subtract(u, p2, p1)
         vec3.subtract(v, p3, p1)
         vec3.cross(n, u, v)
+        vec3.normalize(n, n)
 
         addNormal(i1, n)
         addNormal(i2, n)

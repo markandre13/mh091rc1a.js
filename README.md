@@ -31,11 +31,8 @@ Some changes to the original
 * selected controls stay highlighted
 
 <!--
-
-[ ] combining character morph and pose gets very wrong results
 [ ] rotate body relative to pointerdown position
 [ ] camera move (for re-use in makehuman.js)
-[ ] Mesh.calcNormals() !!!
 [ ] what does the collada support provide? shapekeys?
 [ ] collada, could we export the shapekeys and bind them to a bone?
 [ ] just for fun
