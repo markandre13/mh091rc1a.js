@@ -20,6 +20,9 @@ export class PoseEntry {
         }
         return this.mTarget !== undefined
     }
+    isLoaded() {
+        return this.mTargetLoadTry
+    }
     getTarget() {
         if (!this.mTargetLoadTry) {
             this.loadFromFile()

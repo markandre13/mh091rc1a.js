@@ -141,7 +141,7 @@ export class Mesh {
             this.posemap.set(target_name, new PoseEntry(target_name, file, false))
             ++counter
         }
-        console.log(`loaded ${counter} pose entries from ${targetRootPath}/`)
+        console.log(`referenced ${counter} pose targets from ${targetRootPath}/`)
     }
     // loadCharactersFactory(charactersRootPath: string, recursiveLevel = 1) {
     //     throw Error("not implemented yet")
@@ -151,10 +151,11 @@ export class Mesh {
     // POSE
     //
     private initPoses() {
-        // console.log(`Mesh.initPoses() not implemented`)
-        // return
         this.vertexPosed = this.vertexMorphed.clone()
         this.posemap.forEach((poseEntry) => {
+            if (!poseEntry.isLoaded()) {
+                return
+            }
             const tmp = poseEntry.getTarget()!
             tmp.calcRotationsCenteroids(this.vertexMorphed)
             tmp.calcTranslationsFormFactors(this.vertexMorphed)
@@ -233,7 +234,20 @@ export class Mesh {
         return this.targetmap.get(target_name)?.getTarget()
     }
     getPoseTargetForName(target_name: string): PoseTarget | undefined {
-        return this.posemap.get(target_name)?.getTarget()
+        const poseEntry = this.posemap.get(target_name)!
+        if (poseEntry === undefined) {
+            return undefined
+        }
+        let target
+        if (!poseEntry.isLoaded()) {
+            target = poseEntry.getTarget()!
+            target.calcRotationsCenteroids(this.vertexMorphed)
+            target.calcTranslationsFormFactors(this.vertexMorphed)
+            target.calcNormalizations()
+        } else {
+            target = poseEntry.getTarget()!
+        }
+        return target
     }
 
     doPose(target_name: string, morph_value: number, modVertex: Set<number>) {
