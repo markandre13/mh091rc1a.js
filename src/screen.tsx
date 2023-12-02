@@ -24,7 +24,6 @@ interface ToolDef {
     desc: string
     img?: HTMLImageElement
     render?: (mesh: Mesh, mgr: SelectorListener) => Fragment
-    dom?: Fragment // FIXME: toad.jsx can not initialize the same JSX twice, hence we must cache
 }
 
 const toolbarDefinition: ToolDef[] = [
@@ -52,11 +51,8 @@ function setTab(mesh: Mesh, mgr: SelectorListener, tab: ToolDef) {
     }
     activeTab = tab
     activeTab.img!.src = `images/ui/toolbar_${activeTab.file}_over.png`
-    if (tab.dom === undefined && tab.render !== undefined) {
-        tab.dom = tab.render(mesh, mgr)
-    }
-    if (tab.dom !== undefined) {
-        refs.panel.replaceChildren(...tab.dom)
+    if (tab.render !== undefined) {
+        refs.panel.replaceChildren(...tab.render(mesh, mgr))
     } else {
         refs.panel.replaceChildren()
     }

@@ -39,7 +39,7 @@ export function main() {
     mgr.calcWidgetTargets()
 
     // console.log("init poses")
-    mesh.initPoses()
+    // mesh.initPoses()
 
     // console.log(mesh)
 

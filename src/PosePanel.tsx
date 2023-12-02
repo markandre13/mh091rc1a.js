@@ -15,6 +15,7 @@ let tiles: Tile[]
 let selectedJoint: number | undefined = undefined
 
 export function posesBodyPanel(mesh: Mesh) {
+    mesh.initPoses()
     const panel: HTMLElement[] = []
     tiles = new Array<Tile>(poseTargets.length)
     for (let jointIdx = 1; jointIdx < poseTargets.length; ++jointIdx) {
