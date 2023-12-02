@@ -6,6 +6,8 @@
   A variation of [Makehuman](http://www.makehumancommunity.org) 0.9.1-rc1a as a WebApp.
 </div>
 
+[▶️  run build 2023-12-02](https://markandre13.github.io/mh091rc1a.js/)
+
 ### WHAT
 
 This repository ports parts of Makehuman 0.9.1-rc1a from C++ to Typescript.
