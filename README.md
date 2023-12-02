@@ -34,7 +34,10 @@ Some changes to the original
 
 <!--
 [ ] rotate body relative to pointerdown position
+[ ] top,side,front view
+[ ] center
 [ ] camera move (for re-use in makehuman.js)
+
 [ ] what does the collada support provide? shapekeys?
 [ ] collada, could we export the shapekeys and bind them to a bone?
 [ ] just for fun
