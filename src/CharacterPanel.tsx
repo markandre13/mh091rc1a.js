@@ -40,7 +40,8 @@ function createSelectorView(listener: SelectorListener, selector: Selector, name
     return view
 }
 
-export function characterPanel(mesh: Mesh, mgr: SelectorListener) {
+export function characterPanel(mesh: Mesh) {
+    const mgr = mesh.mgr
     mesh.morphMode()
     return (
         <>

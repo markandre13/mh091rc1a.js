@@ -16,6 +16,8 @@ interface FG {
 
 // makehuman-0.9.1-rc1a/src/makehuman.cpp, line 923
 export function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
+    mesh.update()
+
     // STEP 1: convert mesh.vertexvector_morph to Float32Array
     const vertex: number[] = []
     for (const v of mesh.getVertexes()) {

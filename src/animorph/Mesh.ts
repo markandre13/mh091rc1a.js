@@ -10,6 +10,7 @@ import { PoseRotation, RotateAxis } from "./PoseRotation"
 import { mat4, vec3 } from "gl-matrix"
 import { Signal } from "toad.js"
 import { Target } from "./Target"
+import { SelectorListener } from "SelectorListener"
 
 class TargetMap extends Map<string, TargetEntry> {}
 class PoseMap extends Map<string, PoseEntry> {}
@@ -21,6 +22,8 @@ enum Mode {
 
 // animorph-0.3/src/Mesh.cpp
 export class Mesh {
+    mgr: SelectorListener
+
     changed = new Signal()
     private dirty = false
     private poseChanged = false
@@ -39,6 +42,17 @@ export class Mesh {
     facegroup = new FaceGroup()
     targetmap = new TargetMap()
     posemap = new PoseMap()
+
+    constructor() {
+        this.loadMeshFactory("base.vertices", "base.faces")
+        this.loadGroupsFactory("base.parts")
+        this.loadTargetsFactory("targets")
+        this.loadTargetsFactory("selectors", 1, true, false)
+        this.loadPoseTargetsFactory("rotations")
+        this.mgr = new SelectorListener(this)
+        this.mgr.calcWidgetTargets()
+        this.update()
+    }
 
     morphMode() {
         this.mode = Mode.MORPH

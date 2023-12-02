@@ -23,7 +23,7 @@ interface ToolDef {
     file: string
     desc: string
     img?: HTMLImageElement
-    render?: (mesh: Mesh, mgr: SelectorListener) => Fragment
+    render?: (mesh: Mesh) => Fragment
 }
 
 const toolbarDefinition: ToolDef[] = [
@@ -33,7 +33,7 @@ const toolbarDefinition: ToolDef[] = [
         id: TAB.CHARACTER,
         file: "charac_sett",
         desc: "Character setting (somatypes, shapes, age, etc...)",
-        render: (mesh: Mesh, mgr: SelectorListener) => characterPanel(mesh, mgr),
+        render: (mesh: Mesh) => characterPanel(mesh),
     },
     {
         id: TAB.DETAILS,
@@ -45,20 +45,20 @@ const toolbarDefinition: ToolDef[] = [
 ]
 
 let activeTab: ToolDef | undefined
-function setTab(mesh: Mesh, mgr: SelectorListener, tab: ToolDef) {
+function setTab(mesh: Mesh, tab: ToolDef) {
     if (activeTab) {
         activeTab.img!.src = `images/ui/toolbar_${activeTab.file}.png`
     }
     activeTab = tab
     activeTab.img!.src = `images/ui/toolbar_${activeTab.file}_over.png`
     if (tab.render !== undefined) {
-        refs.panel.replaceChildren(...tab.render(mesh, mgr))
+        refs.panel.replaceChildren(...tab.render(mesh))
     } else {
         refs.panel.replaceChildren()
     }
 }
 
-function toolbarPanel(mesh: Mesh, mgr: SelectorListener): HTMLElement[] {
+function toolbarPanel(mesh: Mesh): HTMLElement[] {
     return toolbarDefinition.map((it) => {
         const img = (<img src={`images/ui/toolbar_${it.file}.png`} title={it.desc} />) as HTMLImageElement
         it.img = img
@@ -71,13 +71,13 @@ function toolbarPanel(mesh: Mesh, mgr: SelectorListener): HTMLElement[] {
             }
         }
         img.onpointerdown = () => {
-            setTab(mesh, mgr, it)
+            setTab(mesh, it)
         }
         return img
     })
 }
 
-export default (mesh: Mesh, mgr: SelectorListener) => {
+export default (mesh: Mesh) => {
     const page = (
         <>
             <div
@@ -91,7 +91,7 @@ export default (mesh: Mesh, mgr: SelectorListener) => {
                 }}
             >
                 <div id="toolbar" style={{ lineHeight: "0" }}>
-                    {...toolbarPanel(mesh, mgr)}
+                    {...toolbarPanel(mesh)}
                     <img src="images/ui/toolbar_reset.png" title="Reset mesh" onpointerdown={() => mesh.clear()} />
                 </div>
                 <div set={new Reference(refs, "panel")}></div>
@@ -115,7 +115,7 @@ export default (mesh: Mesh, mgr: SelectorListener) => {
         </>
     ) as Fragment
 
-    setTab(mesh, mgr, toolbarDefinition[2])
+    setTab(mesh, toolbarDefinition[2])
 
     return page
 }
