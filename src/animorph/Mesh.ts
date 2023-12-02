@@ -109,15 +109,18 @@ export class Mesh {
         this.dirty = false
     }
 
-    loadMeshFactory(meshFilename: string, facesFilename: string) {
+    //
+    // LOAD
+    //
+    private loadMeshFactory(meshFilename: string, facesFilename: string) {
         this.vertexBase.load(meshFilename)
         this.facevector.loadGeometry(facesFilename)
         this.vertexMorphed = this.vertexBase.clone()
     }
-    loadGroupsFactory(groups_filename: string) {
+    private loadGroupsFactory(groups_filename: string) {
         return this.facegroup.load(groups_filename)
     }
-    loadTargetsFactory(targetRootPath: string, recursiveLevel = 1, preload = false, clearmap = true) {
+    private loadTargetsFactory(targetRootPath: string, recursiveLevel = 1, preload = false, clearmap = true) {
         if (clearmap) {
             this.targetmap.clear()
         }
@@ -136,7 +139,7 @@ export class Mesh {
         }
         console.log(`${preload ? "loaded" : "referenced"} ${files.length} morph targets from ${targetRootPath}/`)
     }
-    loadPoseTargetsFactory(targetRootPath: string, recursiveLevel = 1) {
+    private loadPoseTargetsFactory(targetRootPath: string, recursiveLevel = 1) {
         this.posemap.clear()
 
         // reading all the targets recursively
@@ -157,9 +160,6 @@ export class Mesh {
         }
         console.log(`referenced ${counter} pose targets from ${targetRootPath}/`)
     }
-    // loadCharactersFactory(charactersRootPath: string, recursiveLevel = 1) {
-    //     throw Error("not implemented yet")
-    // }
 
     //
     // POSE

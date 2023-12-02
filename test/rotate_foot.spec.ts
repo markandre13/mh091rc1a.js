@@ -13,23 +13,6 @@ describe("rotate_foot", function() {
         this.timeout(360000)
         FileSystemAdapter.setInstance(new HTTPFSAdapter())
         const mesh = new Mesh()
-        mesh.loadMeshFactory("base.vertices", "base.faces")
-        // mesh.loadMaterialFactory("base.materials", "base.colors")
-        // TextureVector texturevector = mesh.getTextureVectorRef()
-        // texturevector.load("base.uv")
-        mesh.loadGroupsFactory("base.parts")
-        // mesh.loadSubdGroupsFactory("subd.parts")
-        // mesh.loadSkinFactory("base.skin") // muscles? file is empty
-        // mesh.loadClothesFactory("base.clothes")
-        // mesh.loadEdgeStripFactory("base.strips")
-        // mesh.loadSmoothVertexFactory("base.smooth")
-        // mesh.loadSubdFactory("base.subde", "base.subdo", "base.subdf")
-
-        mesh.loadTargetsFactory("targets")
-        mesh.loadTargetsFactory("selectors", 1, true, false)
-        mesh.loadPoseTargetsFactory("rotations")
-        // mesh.loadCharactersFactory("bs_data")
-
         console.log("init poses")
         mesh.poseMode()
 
