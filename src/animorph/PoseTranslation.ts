@@ -3,6 +3,7 @@ import { FileSystemAdapter } from "../filesystem/FileSystemAdapter"
 import { Target } from "./Target"
 import { VertexVector } from "./VertexVector"
 import { MultiSet } from "lib/MultiSet"
+import { VectorArray } from "./VectorArray"
 
 const FF_VERTEX_N = 10
 
@@ -39,7 +40,7 @@ export class PoseTranslation {
     getModVertex() {
         return this.target.getModVertex()
     }
-    calcFormFactor(vertexvector: VertexVector) {
+    calcFormFactor(vertexvector: VectorArray) {
         // these are meant to be c++ multiset, meaning they can have duplicate values and are sorted
         // prettier-ignore
         let minXSet = new MultiSet<number>(), maxXSet = new MultiSet<number>(),
@@ -57,37 +58,38 @@ export class PoseTranslation {
         }
 
         for (const td of tmpTarget) {
+            const co = vertexvector.getVec3(td.vertex_number)
             if (counter < n_vertex) {
-                minXSet.insert(vertexvector[td.vertex_number].co[0])
-                maxXSet.insert(vertexvector[td.vertex_number].co[0])
-                minYSet.insert(vertexvector[td.vertex_number].co[1])
-                maxYSet.insert(vertexvector[td.vertex_number].co[1])
-                minZSet.insert(vertexvector[td.vertex_number].co[2])
-                maxZSet.insert(vertexvector[td.vertex_number].co[2])
+                minXSet.insert(co[0])
+                maxXSet.insert(co[0])
+                minYSet.insert(co[1])
+                maxYSet.insert(co[1])
+                minZSet.insert(co[2])
+                maxZSet.insert(co[2])
                 ++counter
             } else {
-                if (vertexvector[td.vertex_number].co[0] < minXSet.last()) {
-                    minXSet.insert(vertexvector[td.vertex_number].co[0])
+                if (co[0] < minXSet.last()) {
+                    minXSet.insert(co[0])
                     minXSet.eraseLast()
                 }
-                if (vertexvector[td.vertex_number].co[0] > maxXSet.first()) {
-                    maxXSet.insert(vertexvector[td.vertex_number].co[0])
+                if (co[0] > maxXSet.first()) {
+                    maxXSet.insert(co[0])
                     maxXSet.eraseFirst()
                 }
-                if (vertexvector[td.vertex_number].co[1] < minYSet.last()) {
-                    minYSet.insert(vertexvector[td.vertex_number].co[1])
+                if (co[1] < minYSet.last()) {
+                    minYSet.insert(co[1])
                     minYSet.eraseLast()
                 }
-                if (vertexvector[td.vertex_number].co[1] > maxYSet.first()) {
-                    maxYSet.insert(vertexvector[td.vertex_number].co[1])
+                if (co[1] > maxYSet.first()) {
+                    maxYSet.insert(co[1])
                     maxYSet.eraseFirst()
                 }
-                if (vertexvector[td.vertex_number].co[2] < minZSet.last()) {
-                    minZSet.insert(vertexvector[td.vertex_number].co[2])
+                if (co[2] < minZSet.last()) {
+                    minZSet.insert(co[2])
                     minZSet.eraseLast()
                 }
-                if (vertexvector[td.vertex_number].co[2] > maxZSet.first()) {
-                    maxZSet.insert(vertexvector[td.vertex_number].co[2])
+                if (co[2] > maxZSet.first()) {
+                    maxZSet.insert(co[2])
                     maxZSet.eraseFirst()
                 }
             }

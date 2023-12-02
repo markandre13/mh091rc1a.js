@@ -11,6 +11,7 @@ import { mat4, vec3 } from "gl-matrix"
 import { Signal } from "toad.js"
 import { Target } from "./Target"
 import { SelectorListener } from "SelectorListener"
+import { VectorArray } from "./VectorArray"
 
 class TargetMap extends Map<string, TargetEntry> {}
 class PoseMap extends Map<string, PoseEntry> {}
@@ -29,9 +30,9 @@ export class Mesh {
     private poseChanged = false
     private mode = Mode.MORPH
 
-    private vertexBase = new VertexVector() // vertices as loaded from file
-    private vertexMorphed!: VertexVector // morphed vertices
-    private vertexPosed!: VertexVector // morphed and posed vertices
+    private vertexBase!: VectorArray // vertices as loaded from file
+    private vertexMorphed!: VectorArray // morphed vertices
+    private vertexPosed!: VectorArray // morphed and posed vertices
 
     // user settings for posing
     private poses = new BodySettings()
@@ -64,7 +65,7 @@ export class Mesh {
         this.poseChanged = true
         this.markDirty()
     }
-    getVertexes(): VertexVector {
+    getVertexes(): Float32Array {
         switch (this.mode) {
             case Mode.MORPH:
                 return this.vertexMorphed
@@ -86,7 +87,7 @@ export class Mesh {
         if (this.bodyset.size === 0) {
             return
         }
-        this.vertexMorphed.setFrom(this.vertexBase)
+        this.vertexMorphed.set(this.vertexBase)
         this.bodyset.clear()
         this.markDirty()
     }
@@ -113,9 +114,19 @@ export class Mesh {
     // LOAD
     //
     private loadMeshFactory(meshFilename: string, facesFilename: string) {
-        this.vertexBase.load(meshFilename)
+        const vertex = new VertexVector()
+        vertex.load(meshFilename)
+        this.vertexBase = new VectorArray(vertex.length * 3)
+        let o = 0
+        for(let i=0; i<vertex.length; ++i) {
+            const co = vertex[i].co
+            this.vertexBase[o++] = co[0]
+            this.vertexBase[o++] = co[1]
+            this.vertexBase[o++] = co[2]
+        }
         this.facevector.loadGeometry(facesFilename)
-        this.vertexMorphed = this.vertexBase.clone()
+        this.vertexMorphed = new VectorArray(this.vertexBase)
+        this.vertexPosed = new VectorArray(this.vertexBase)
     }
     private loadGroupsFactory(groups_filename: string) {
         return this.facegroup.load(groups_filename)
@@ -165,7 +176,7 @@ export class Mesh {
     // POSE
     //
     private initPoses() {
-        this.vertexPosed = this.vertexMorphed.clone()
+        this.vertexPosed.set(this.vertexMorphed)
         this.posemap.forEach((poseEntry) => {
             if (!poseEntry.isLoaded()) {
                 return
@@ -232,7 +243,7 @@ export class Mesh {
         }
         this.poseChanged = false
 
-        this.vertexPosed!.setFrom(this.vertexMorphed!)
+        this.vertexPosed.set(this.vertexMorphed)
 
         // Map is not sorted but poses must be applied sorted by target_name
         ;[...this.poses.keys()].sort().forEach((target_name) => {
@@ -303,7 +314,7 @@ export class Mesh {
             if (!modVertex.has(td.vertex_number)) {
                 continue
             }
-            const co = this.vertexPosed[td.vertex_number].co
+            const co = this.vertexPosed.getVec3(td.vertex_number)
             vec3.add(
                 co,
                 co,
@@ -313,6 +324,7 @@ export class Mesh {
                     formFactor[2] * td.morph_vector[2] * real_value
                 )
             )
+            this.vertexPosed.setVec3(td.vertex_number, co)
         }
     }
     doPoseRotation(pr: PoseRotation, morph_value: number, modVertex: Set<number>) {
@@ -353,13 +365,14 @@ export class Mesh {
                     mat4.rotateZ(rotMatrix, rotMatrix, theta)
                     break
             }
-            const co = this.vertexPosed[td.vertex_number].co
+            const co = this.vertexPosed.getVec3(td.vertex_number)
             if (co === undefined) {
                 throw Error()
             }
             vec3.sub(co, co, pr.getCenter())
             vec3.transformMat4(co, co, rotMatrix)
             vec3.add(co, co, pr.getCenter())
+            this.vertexPosed.setVec3(td.vertex_number, co)
         }
     }
 
@@ -390,9 +403,10 @@ export class Mesh {
         const target = this.getTargetForName(target_name)!
 
         for (const td of target) {
-            const co = this.vertexMorphed[td.vertex_number].co
+            const co = this.vertexMorphed.getVec3(td.vertex_number)
             const mv = vec3.scale(vec3.create(), td.morph_vector, real_morph_value)
             vec3.add(co, co, mv)
+            this.vertexMorphed.setVec3(td.vertex_number, co)
         }
 
         if (morph_value === 0) {

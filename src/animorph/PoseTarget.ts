@@ -1,16 +1,16 @@
 import { DirectoryList } from "./DirectoryList"
-import { Vertex } from "./Vertex"
 import { PoseRotation } from "./PoseRotation"
 import { PoseTranslation } from "./PoseTranslation"
 import { vec3 } from "gl-matrix"
 import { VertexVector } from "./VertexVector"
+import { VectorArray } from "./VectorArray"
 
 export class UnsortedUsedVertex extends Array<number> {}
 
-export function calcCenteroid(vertexNumbers: number[], vertexvector: Vertex[]): vec3 {
+export function calcCenteroid(vertexNumbers: number[], vertexvector: VectorArray): vec3 {
     let center = vec3.create()
     for (const vn of vertexNumbers) {
-        vec3.add(center, center, vertexvector[vn].co)
+        vec3.add(center, center, vertexvector.getVec3(vn))
     }
     vec3.scale(center, center, 1 / vertexNumbers.length)
     return center
@@ -102,7 +102,7 @@ export class PoseTarget {
         }
     }
     /// Initializes the center of all rotations with the controid of their centerVertexNumbers
-    calcRotationsCenteroids(vertexvector: VertexVector, rotations?: PoseRotation[]): void {
+    calcRotationsCenteroids(vertexvector: VectorArray, rotations?: PoseRotation[]): void {
         if (rotations === undefined) {
             if (this.positive) {
                 this.calcRotationsCenteroids(vertexvector, this.positiveRotations)
@@ -117,7 +117,7 @@ export class PoseTarget {
         }
     }
 
-    calcTranslationsFormFactors(vertexvector: VertexVector, translations?: PoseTranslation[]): void {
+    calcTranslationsFormFactors(vertexvector: VectorArray, translations?: PoseTranslation[]): void {
         if (translations === undefined) {
             if (this.positive) {
                 this.calcTranslationsFormFactors(vertexvector, this.positiveTranslations)
@@ -144,7 +144,7 @@ export class PoseTarget {
             if (rotations_it.getMinAngle() !== this.minAngle || rotations_it.getMaxAngle() !== this.maxAngle) {
                 rotations_it.setNormalize(true)
             }
-         }
+        }
         for (const translations_it of this.positiveTranslations) {
             if (translations_it.getMinAngle() !== this.minAngle || translations_it.getMaxAngle() !== this.maxAngle) {
                 translations_it.setNormalize(true)

@@ -19,10 +19,11 @@ export function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     mesh.update()
 
     // STEP 1: convert mesh.vertexvector_morph to Float32Array
-    const vertex: number[] = []
-    for (const v of mesh.getVertexes()) {
-        vertex.push(v.co[0], v.co[1], v.co[2])
-    }
+    const vertex = mesh.getVertexes()
+    // const vertex: number[] = []
+    // for (const v of mesh.getVertexes()) {
+    //     vertex.push(v.co[0], v.co[1], v.co[2])
+    // }
 
     // STEP 2: created faces and as they are a mix of triangles and quads, convert them to triangles
     const fvertex: number[] = []
@@ -115,11 +116,7 @@ export function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     mesh.changed.add(() => {
         requestAnimationFrame(() => {
             mesh.update()
-            const vertex: number[] = []
-            for (const v of mesh.getVertexes()) {
-                vertex.push(v.co[0], v.co[1], v.co[2])
-            }
-            renderMesh.update(new Float32Array(vertex))
+            renderMesh.update(mesh.getVertexes())
             paint()
         })
     })
