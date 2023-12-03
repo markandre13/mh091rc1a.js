@@ -3,7 +3,6 @@ import { Mesh } from "animorph/Mesh"
 import { bodyDetailsPanel } from "DetailPanel"
 import { Fragment, Reference } from "toad.jsx/lib/jsx-runtime"
 import { characterPanel } from "CharacterPanel"
-import { SelectorListener } from "SelectorListener"
 
 interface RefTypes {
     panel: HTMLDivElement
@@ -20,37 +19,37 @@ enum TAB {
 
 interface ToolDef {
     id: TAB
-    file: string
+    icon: string
     desc: string
     img?: HTMLImageElement
     render?: (mesh: Mesh) => Fragment
 }
 
 const toolbarDefinition: ToolDef[] = [
-    { id: TAB.LOAD, file: "load", desc: "Load body setting" },
-    { id: TAB.SAVE, file: "save", desc: "Save body setting" },
+    { id: TAB.LOAD, icon: "load", desc: "Load body setting" },
+    { id: TAB.SAVE, icon: "save", desc: "Save body setting" },
     {
         id: TAB.CHARACTER,
-        file: "charac_sett",
+        icon: "charac_sett",
         desc: "Character setting (somatypes, shapes, age, etc...)",
         render: (mesh: Mesh) => characterPanel(mesh),
     },
     {
         id: TAB.DETAILS,
-        file: "body_det_real",
+        icon: "body_det_real",
         desc: "Body details (realistic morphings)",
         render: (mesh: Mesh) => bodyDetailsPanel(mesh),
     },
-    { id: TAB.POSE, file: "poses", desc: "Reset mesh", render: (mesh: Mesh) => posesBodyPanel(mesh) },
+    { id: TAB.POSE, icon: "poses", desc: "Reset mesh", render: (mesh: Mesh) => posesBodyPanel(mesh) },
 ]
 
 let activeTab: ToolDef | undefined
 function setTab(mesh: Mesh, tab: ToolDef) {
     if (activeTab) {
-        activeTab.img!.src = `images/ui/toolbar_${activeTab.file}.png`
+        activeTab.img!.src = `images/ui/toolbar_${activeTab.icon}.png`
     }
     activeTab = tab
-    activeTab.img!.src = `images/ui/toolbar_${activeTab.file}_over.png`
+    activeTab.img!.src = `images/ui/toolbar_${activeTab.icon}_over.png`
     if (tab.render !== undefined) {
         refs.panel.replaceChildren(...tab.render(mesh))
     } else {
@@ -60,14 +59,14 @@ function setTab(mesh: Mesh, tab: ToolDef) {
 
 function toolbarPanel(mesh: Mesh): HTMLElement[] {
     return toolbarDefinition.map((it) => {
-        const img = (<img src={`images/ui/toolbar_${it.file}.png`} title={it.desc} />) as HTMLImageElement
+        const img = (<img src={`images/ui/toolbar_${it.icon}.png`} title={it.desc} />) as HTMLImageElement
         it.img = img
         img.onpointerenter = () => {
-            img.src = `images/ui/toolbar_${it.file}_over.png`
+            img.src = `images/ui/toolbar_${it.icon}_over.png`
         }
         img.onpointerleave = () => {
             if (it !== activeTab) {
-                img.src = `images/ui/toolbar_${it.file}.png`
+                img.src = `images/ui/toolbar_${it.icon}.png`
             }
         }
         img.onpointerdown = () => {

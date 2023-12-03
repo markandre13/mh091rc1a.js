@@ -65,7 +65,7 @@ export class Mesh {
         this.poseChanged = true
         this.markDirty()
     }
-    getVertexes(): Float32Array {
+    getVertexes(): VectorArray {
         switch (this.mode) {
             case Mode.MORPH:
                 return this.vertexMorphed

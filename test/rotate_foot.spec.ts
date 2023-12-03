@@ -17,16 +17,17 @@ describe("rotate_foot", function() {
         mesh.poseMode()
 
         // compare with C++ version
-        expect(mesh.getVertexes()[4643].co).to.deep.almost.equal(vec3.fromValues(1.55093, -4.87655, -0.823161))
+        expect(mesh.getVertexes().getVec3(4643)).to.deep.almost.equal(vec3.fromValues(1.55093, -4.87655, -0.823161))
 
         mesh.setPose("040_left_foot/ROT1", 60)
-        expect(mesh.getVertexes()[4643].co).to.deep.almost.equal(vec3.fromValues(1.55093, -4.76291, -0.886281))
+        expect(mesh.getVertexes().getVec3(4643)).to.deep.almost.equal(vec3.fromValues(1.55093, -4.76291, -0.886281))
 
         // compare everything with the C++ version
-        let i = 0
-        for(const e of mesh.getVertexes()) {
+
+        for(let i = 0; i<mesh.getVertexes().length/3; ++i) {
+            const e = mesh.getVertexes().getVec3(i)
             const co = vec3.fromValues(meshRotatedLeftFootRot1_60[i], meshRotatedLeftFootRot1_60[i+1], meshRotatedLeftFootRot1_60[i+2])
-            expect(co, `mesh[${i/6}].co`).to.deep.almost.equal(e.co)
+            expect(co, `mesh[${i/6}].co`).to.deep.almost.equal(e)
             i+=6
         }
     })
