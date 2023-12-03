@@ -33,7 +33,6 @@ Some changes to the original
 * selected controls stay highlighted
 
 <!--
-[ ] rotate body relative to pointerdown position
 [ ] top,side,front view
 [ ] center
 [ ] camera move (for re-use in makehuman.js)

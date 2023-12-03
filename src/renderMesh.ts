@@ -63,8 +63,8 @@ export function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     canvas.onpointerdown = (ev: PointerEvent) => {
         canvas.setPointerCapture(ev.pointerId)
         buttonDown = true
-        ctx.rotateX = downX = ev.x
-        ctx.rotateY = downY = ev.y
+        downX = ev.x
+        downY = ev.y
     }
     canvas.onpointerup = (ev: PointerEvent) => {
         buttonDown = false
@@ -73,9 +73,11 @@ export function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
         if (buttonDown) {
             const x = ev.x - downX
             const y = ev.y - downY
-            if (x !== ctx.rotateX || y !== ctx.rotateY) {
-                ctx.rotateX = x
-                ctx.rotateY = y
+            if (x !== 0 || y !== 0) {
+                ctx.rotateX += x
+                ctx.rotateY += y
+                downX = ev.x
+                downY = ev.y
                 requestAnimationFrame(() => paint(ctx))
             }
         }
