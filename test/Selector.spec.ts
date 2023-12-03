@@ -2,8 +2,8 @@ import { use, expect } from "@esm-bundle/chai"
 import { chaiAlmost } from "./chai/chaiAlmost"
 use(chaiAlmost())
 
-import { Selector } from "../src/Selector"
-import { SelectorListener } from "../src/SelectorListener"
+import { Selector } from "../src/animorph/Selector"
+import { SelectorManager } from "../src/animorph/SelectorManager"
 
 import { Expect, expect00, expect01 } from "./data/SelectorListener"
 
@@ -50,7 +50,7 @@ describe("SelectorListener", () => {
     describe("calcWidgetTargets()", () => {
        it("001", () => {
             const out: Expect[] = []
-            const sl = new SelectorListener({
+            const sl = new SelectorManager({
                 doMorph: (name: string, value: number) => {
                     out.push({ name, value })
                     return value
@@ -65,7 +65,7 @@ describe("SelectorListener", () => {
         })
         it("002", () => {
             const out: Expect[] = []
-            const sl = new SelectorListener({
+            const sl = new SelectorManager({
                 doMorph: (name: string, value: number) => {
                     out.push({ name, value })
                     return value

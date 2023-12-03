@@ -1,4 +1,4 @@
-import { Point } from "Point"
+import { Point } from "animorph/Point"
 
 export class Selector {
     height = 104;

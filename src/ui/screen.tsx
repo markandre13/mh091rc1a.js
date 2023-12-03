@@ -1,8 +1,8 @@
-import { posesBodyPanel } from "PosePanel"
-import { Mesh } from "animorph/Mesh"
-import { bodyDetailsPanel } from "DetailPanel"
+import { posesBodyPanel } from "./PosePanel"
+import { bodyDetailsPanel } from "./DetailPanel"
+import { characterPanel } from "./CharacterPanel"
+import { Mesh } from "../animorph/Mesh"
 import { Fragment, Reference } from "toad.jsx/lib/jsx-runtime"
-import { characterPanel } from "CharacterPanel"
 
 interface RefTypes {
     panel: HTMLDivElement

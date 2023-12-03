@@ -2,7 +2,7 @@ import { FileSystemAdapter } from "./filesystem/FileSystemAdapter"
 import { HTTPFSAdapter } from "./filesystem/HTTPFSAdapter"
 import { Mesh } from "./animorph/Mesh"
 import { renderMesh } from "renderMesh"
-import screen from "./screen"
+import screen from "./ui/screen"
 
 export function main() {
     console.log(`mh091rc1a (Makehuman 0.9.1-rc1a clone)`)

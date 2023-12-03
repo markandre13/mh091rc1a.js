@@ -1,7 +1,8 @@
-import { Selector } from "Selector"
+import { Selector } from "animorph/Selector"
 import { Mesh } from "animorph/Mesh"
 
-export class SelectorListener {
+// aka. SelectorListener in upstream
+export class SelectorManager {
     mesh: Mesh
 
     age: Selector

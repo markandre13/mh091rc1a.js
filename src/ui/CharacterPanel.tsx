@@ -1,8 +1,8 @@
 import { Mesh } from "animorph/Mesh"
-import { SelectorListener } from "SelectorListener"
-import { Selector } from "Selector"
+import { SelectorManager } from "animorph/SelectorManager"
+import { Selector } from "animorph/Selector"
 
-function createSelectorView(listener: SelectorListener, selector: Selector, name: string) {
+function createSelectorView(listener: SelectorManager, selector: Selector, name: string) {
     const view = (
         <div style={{ position: "relative" }}>
             <div
