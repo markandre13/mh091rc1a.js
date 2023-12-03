@@ -26,13 +26,17 @@ export function createModelViewMatrix(x: number, y: number) {
     return modelViewMatrix
 }
 
-export function createProjectionMatrix(canvas: HTMLCanvasElement) {
+export function createProjectionMatrix(canvas: HTMLCanvasElement, perspective: boolean) {
     const fieldOfView = (45 * Math.PI) / 180 // in radians
     const aspect = canvas.width / canvas.height
     const zNear = 0.1
     const zFar = 100
     const projectionMatrix = mat4.create()
+    if (perspective) {
     mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar)
+    } else {
+        mat4.ortho(projectionMatrix, -10*aspect, 10*aspect,  -10, 10, zNear, zFar)
+    }
     return projectionMatrix
 }
 

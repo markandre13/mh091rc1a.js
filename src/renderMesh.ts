@@ -14,14 +14,20 @@ interface FG {
     length: number
 }
 
+enum Projection {
+    PERSPECTIVE,
+    ORTHOGONAL,
+}
+
 interface RenderContext {
     canvas: HTMLCanvasElement
     gl: WebGL2RenderingContext
     programRGBA: RGBAShader
     renderMesh: RenderMesh
     faceGroups: Map<string, FG>
-    rotateX: number
     rotateY: number
+    rotateX: number
+    projection: Projection
 }
 
 export function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
@@ -43,8 +49,15 @@ export function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
     const renderMesh = new RenderMesh(gl, new Float32Array(vertex), fvertex, undefined, undefined, false)
     renderMesh.bind(programRGBA)
 
-    const ctx = {
-        canvas, gl, programRGBA, renderMesh, faceGroups, rotateX: 0, rotateY: 0
+    const ctx: RenderContext = {
+        canvas,
+        gl,
+        programRGBA,
+        renderMesh,
+        faceGroups,
+        rotateY: 0,
+        rotateX: 0,
+        projection: Projection.PERSPECTIVE,
     }
 
     mesh.changed.add(() => {
@@ -74,14 +87,82 @@ export function renderMesh(canvas: HTMLCanvasElement, mesh: Mesh) {
             const x = ev.x - downX
             const y = ev.y - downY
             if (x !== 0 || y !== 0) {
-                ctx.rotateX += x
-                ctx.rotateY += y
+                ctx.rotateY += x
+                ctx.rotateX += y
                 downX = ev.x
                 downY = ev.y
                 requestAnimationFrame(() => paint(ctx))
             }
         }
     }
+    window.onkeydown = (ev: KeyboardEvent) => {
+        switch (ev.code) {
+            case "Numpad1": // front orthographic
+                if (ev.ctrlKey) {
+                    // back
+                    ctx.rotateX = 0
+                    ctx.rotateY = 180
+                } else {
+                    // front
+                    ctx.rotateY = 0
+                    ctx.rotateX = 0
+                }
+                ctx.projection = Projection.ORTHOGONAL
+                requestAnimationFrame(() => paint(ctx))
+                break
+            case "Numpad7": // top orthographic
+                if (ev.ctrlKey) {
+                    // bottom
+                    ctx.rotateX = -90
+                    ctx.rotateY = 0
+                } else {
+                    // top
+                    ctx.rotateX = 90
+                    ctx.rotateY = 0
+                }
+                ctx.projection = Projection.ORTHOGONAL
+                requestAnimationFrame(() => paint(ctx))
+                break
+            case "Numpad3": // right orthographic
+                if (ev.ctrlKey) {
+                    // left
+                    ctx.rotateX = 0
+                    ctx.rotateY = -90
+                } else {
+                    // right
+                    ctx.rotateX = 0
+                    ctx.rotateY = 90
+                }
+                ctx.projection = Projection.ORTHOGONAL
+                requestAnimationFrame(() => paint(ctx))
+                break
+            case "Numpad4":
+                ctx.rotateY -= 11.25
+                requestAnimationFrame(() => paint(ctx))
+                break
+            case "Numpad6":
+                ctx.rotateY += 11.25
+                requestAnimationFrame(() => paint(ctx))
+                break
+            case "Numpad8":
+                ctx.rotateX -= 11.25
+                requestAnimationFrame(() => paint(ctx))
+                break
+            case "Numpad2":
+                ctx.rotateX += 11.25
+                requestAnimationFrame(() => paint(ctx))
+                break
+            case "Numpad5": // toggle orthographic/perspective
+                if (ctx.projection === Projection.ORTHOGONAL) {
+                    ctx.projection = Projection.PERSPECTIVE
+                } else {
+                    ctx.projection = Projection.ORTHOGONAL
+                }
+                requestAnimationFrame(() => paint(ctx))
+                break
+        }
+    }
+    canvas.tabIndex = 0
 }
 
 function triangles(mesh: Mesh) {
@@ -115,8 +196,8 @@ function triangles(mesh: Mesh) {
 
 function paint(ctx: RenderContext) {
     adjustCanvasSize(ctx.canvas)
-    const projectionMatrix = createProjectionMatrix(ctx.canvas)
-    const modelViewMatrix = createModelViewMatrix(ctx.rotateX, ctx.rotateY)
+    const projectionMatrix = createProjectionMatrix(ctx.canvas, ctx.projection === Projection.PERSPECTIVE)
+    const modelViewMatrix = createModelViewMatrix(ctx.rotateY, ctx.rotateX)
     const normalMatrix = createNormalMatrix(modelViewMatrix)
     ctx.programRGBA.initModelViewMatrix(modelViewMatrix)
     ctx.programRGBA.initNormalMatrix(normalMatrix)
