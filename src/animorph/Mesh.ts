@@ -203,7 +203,7 @@ export class Mesh {
     setPose(target_name: string, morph_value: number) {
         const poseTarget = this.getPoseTargetForName(target_name)
         if (poseTarget === undefined) {
-            throw Error(`unknown pose target ${target_name}`)
+            throw Error(`unknown pose target '${target_name}'`)
         }
         if (morph_value < poseTarget.getMinAngle()) {
             morph_value = poseTarget.getMinAngle()
