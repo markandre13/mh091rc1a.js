@@ -3,6 +3,7 @@ import { bodyDetailsPanel } from "./DetailPanel"
 import { characterPanel } from "./CharacterPanel"
 import { Mesh } from "../animorph/Mesh"
 import { Fragment, Reference } from "toad.jsx/lib/jsx-runtime"
+import { Button } from "toad.js"
 
 interface RefTypes {
     panel: HTMLDivElement
@@ -25,9 +26,55 @@ interface ToolDef {
     render?: (mesh: Mesh) => Fragment
 }
 
+const download = makeDownloadElement()
+const upload = makeUploadElement()
+
+function savePanel(mesh: Mesh) {
+    return (
+        <>
+            <Button action={() => saveBS(mesh, download)}>Save Shape</Button>
+            <Button action={() => savePose(mesh, download)}>Save Pose</Button>
+        </>
+    )
+}
+
+function saveBS(mesh: Mesh, download: HTMLAnchorElement) {
+    let out = ""
+    mesh.bodyset.forEach((value, key) => {
+        out += `${key},${value}\n`
+    })
+    download.download = "makehuman.bs"
+    download.href = URL.createObjectURL(new Blob([out], { type: "text/plain" }))
+    download.dispatchEvent(new MouseEvent("click"))
+}
+function savePose(mesh: Mesh, download: HTMLAnchorElement) {
+    let out = ""
+    mesh.poses.forEach((value, key) => {
+        out += `${key},${value}\n`
+    })
+    download.download = "makehuman.pose"
+    download.href = URL.createObjectURL(new Blob([out], { type: "text/plain" }))
+    download.dispatchEvent(new MouseEvent("click"))
+}
+
+function makeDownloadElement() {
+    const download = document.createElement("a")
+    download.type = "text/plain"
+    download.style.display = "hidden"
+    download.download = "makehuman.dae"
+    return download
+}
+
+function makeUploadElement() {
+    const upload = document.createElement("input")
+    upload.type = "file"
+    upload.style.display = "none"
+    return upload
+}
+
 const toolbarDefinition: ToolDef[] = [
     { id: TAB.LOAD, icon: "load", desc: "Load body setting" },
-    { id: TAB.SAVE, icon: "save", desc: "Save body setting" },
+    { id: TAB.SAVE, icon: "save", desc: "Save body setting", render: (mesh: Mesh) => savePanel(mesh) },
     {
         id: TAB.CHARACTER,
         icon: "charac_sett",

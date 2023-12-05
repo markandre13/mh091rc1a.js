@@ -35,8 +35,8 @@ export class Mesh {
     private vertexPosed!: VectorArray // morphed and posed vertices
 
     // user settings for posing
-    private poses = new BodySettings()
-    private bodyset = new BodySettings()
+    poses = new BodySettings()
+    bodyset = new BodySettings()
 
     // faces
     facevector = new FaceVector()

@@ -33,9 +33,10 @@ Some changes to the original
 * selected controls stay highlighted
 
 <!--
-[ ] top,side,front view
 [ ] center
 [ ] camera move (for re-use in makehuman.js)
+[ ] save/load pose
+[ ] save/load morph
 
 [ ] what does the collada support provide? shapekeys?
 [ ] collada, could we export the shapekeys and bind them to a bone?
@@ -43,8 +44,6 @@ Some changes to the original
   [ ] the MH background with the logo
   [ ] uv & texture?
   [ ] Mesh.calcSubsurf()
-  [ ] save/load pose
-  [ ] save/load morph
   [ ] export collada
 
 [ ] numpad keys to implement
