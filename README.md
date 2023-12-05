@@ -35,8 +35,6 @@ Some changes to the original
 <!--
 [ ] center
 [ ] camera move (for re-use in makehuman.js)
-[ ] save/load pose
-[ ] save/load morph
 
 [ ] what does the collada support provide? shapekeys?
 [ ] collada, could we export the shapekeys and bind them to a bone?
